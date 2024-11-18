@@ -74,10 +74,14 @@ bool Game::init() {
 
 bool Game::loadMedia() {
 	// Load media
+
+	// Load test texture
+
 	return true;
 }
 
 void Game::close() {
+
 	// Close the renderer
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
@@ -100,6 +104,17 @@ void Game::mainLoop() {
 	// Input event
 	SDL_Event e;
 
+	// Texture for testing 
+
+	Texture testTexture = Texture(renderer);
+	if (!testTexture.loadFromFile("C:/Users/Sebastian Kember/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/car_test_image.png")) {
+		std::cout << "Error loading test texture" << std::endl;
+	}
+
+	//testTexture.setColor(255, 0, 0);
+	//testTexture.setAlpha(128);
+
+	// Main loop
 	while (!quit) {
 
 		// When an event is detected
@@ -109,6 +124,10 @@ void Game::mainLoop() {
 			if (e.type == SDL_QUIT) {
 				quit = true;
 			}
+			SDL_RenderClear(renderer);
+
+			testTexture.render(0, 0, NULL, 90, NULL, SDL_FLIP_NONE);
+			SDL_RenderPresent(renderer);
 		}
 	}
 
