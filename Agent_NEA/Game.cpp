@@ -1,17 +1,18 @@
 #include "Game.h"
 #include <iostream>
 
+
+const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
+
 Game::Game() {
 	// Initialise SDL
-	init();
+	//init();
 
 	// Load media
-	loadMedia();
+	//loadMedia();
 
 	// Run the main loop
-	mainLoop();
-
-
+	//mainLoop();
 }
 
 Game::~Game() {
@@ -107,7 +108,7 @@ void Game::mainLoop() {
 	// Texture for testing 
 
 	Texture testTexture = Texture(renderer);
-	if (!testTexture.loadFromFile("C:/Users/Sebastian Kember/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/car_test_image.png")) {
+	if (!testTexture.loadFromFile(PATH + "car_test_image.png")) {
 		std::cout << "Error loading test texture" << std::endl;
 	}
 
@@ -126,7 +127,7 @@ void Game::mainLoop() {
 			}
 			SDL_RenderClear(renderer);
 
-			testTexture.render(0, 0, NULL, 90, NULL, SDL_FLIP_NONE);
+			testTexture.render(0, 0, NULL, 0, NULL, SDL_FLIP_HORIZONTAL);
 			SDL_RenderPresent(renderer);
 		}
 	}
@@ -134,9 +135,24 @@ void Game::mainLoop() {
 	close();
 }
 
+bool Game::start() {
+	// Start the game
+	if (!init()) {
+		std::cout << "Error initialising game" << std::endl;
+		return false;
+	}
+	if (!loadMedia()) {
+		std::cout << "Error loading media" << std::endl;
+		return false;
+	}
+	mainLoop();
+	return true;
+}
+
 int main(int argc, char* args[]) {
 	// Initialise a new Game 
 	Game game = Game();
+	game.start();
 
 	return 0;
 }

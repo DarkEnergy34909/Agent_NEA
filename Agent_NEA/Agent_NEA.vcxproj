@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Sebastian Kember\vclib\SDL2-2.24.1\include;C:\Users\Sebastian Kember\vclib\SDL2_image-2.6.3\include;C:\Users\Sebastian Kember\vclib\SDL2_ttf-2.20.2\include;C:\Users\Sebastian Kember\vclib\SDL2_mixer-2.6.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Sebastian Kember\vclib\SDL2-2.24.1\lib\x64;C:\Users\Sebastian Kember\vclib\SDL2_image-2.6.3\lib\x64;C:\Users\Sebastian Kember\vclib\SDL2_ttf-2.20.2\lib\x64;C:\Users\Sebastian Kember\vclib\SDL2_mixer-2.6.3\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Sebastian Kember\vclib\SDL2-2.24.1\include;C:\Users\Sebastian Kember\vclib\SDL2_image-2.6.3\include;C:\Users\Sebastian Kember\vclib\SDL2_ttf-2.20.2\include;C:\Users\Sebastian Kember\vclib\SDL2_mixer-2.6.3\include;C:\Users\S_kem\OneDrive - King Edward VI Grammar School\CS A-Level\NEA\Libraries\SDL2-2.30.9\include;C:\Users\S_kem\OneDrive - King Edward VI Grammar School\CS A-Level\NEA\Libraries\SDL2_image-2.8.2\include;C:\Users\S_kem\OneDrive - King Edward VI Grammar School\CS A-Level\NEA\Libraries\SDL2_ttf-2.22.0\include;C:\Users\S_kem\OneDrive - King Edward VI Grammar School\CS A-Level\NEA\Libraries\SDL2_mixer-2.8.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Sebastian Kember\vclib\SDL2-2.24.1\lib\x64;C:\Users\Sebastian Kember\vclib\SDL2_image-2.6.3\lib\x64;C:\Users\Sebastian Kember\vclib\SDL2_ttf-2.20.2\lib\x64;C:\Users\Sebastian Kember\vclib\SDL2_mixer-2.6.3\lib\x64;C:\Users\S_kem\OneDrive - King Edward VI Grammar School\CS A-Level\NEA\Libraries\SDL2-2.30.9\lib\x64;C:\Users\S_kem\OneDrive - King Edward VI Grammar School\CS A-Level\NEA\Libraries\SDL2_image-2.8.2\lib\x64;C:\Users\S_kem\OneDrive - King Edward VI Grammar School\CS A-Level\NEA\Libraries\SDL2_ttf-2.22.0\lib\x64;C:\Users\S_kem\OneDrive - King Edward VI Grammar School\CS A-Level\NEA\Libraries\SDL2_mixer-2.8.0\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -133,10 +133,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

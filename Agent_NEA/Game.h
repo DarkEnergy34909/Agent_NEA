@@ -27,6 +27,9 @@ class Game {
 		// Main window loop
 		void mainLoop();
 
+		// Starts the game by initialising SDL and loading media
+		bool start();
+
 	private:
 		// Screen dimensions
 		const int SCREEN_WIDTH = 640;
