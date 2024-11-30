@@ -1,21 +1,33 @@
 #include "GameObject.h"
 
-GameObject::GameObject() {
-	posX = 0;
-	posY = 0;
-	width = 0;
-	height = 0;
+GameObject::GameObject(Texture& texture, int posX, int posY, int width, int height) {
+	// Initialise position of the object
+	this->posX = posX;
+	this->posY = posY;
 
-	collider = { 0, 0, 0, 0 };
+	// Initialise dimensions
+	this->width = width;
+	this->height = height;
+
+	// Initialise collider
+	collider.x = posX;
+	collider.y = posY;
+	collider.w = width;
+	collider.h = height;
+
+	// Initialise the texture 
+	this->texture = &texture;
+	this->texture->setWidth(width);
+	this->texture->setHeight(height);
 }
 
 GameObject::~GameObject() {
-	texture.free();
+	// Do nothing
 }
 
-void GameObject::render(bool isFlipped) {
-	// TODO: Add flip functionality
-	texture.render(posX, posY);
+void GameObject::render() {
+	// Render the texture at the object's position
+	texture->render(posX, posY);
 }
 
 int GameObject::getPosX() {
@@ -62,7 +74,7 @@ void GameObject::setWidth(int width) {
 	collider.w = width;
 
 	// Update texture width
-	texture.setWidth(width);
+	texture->setWidth(width);
 }
 
 void GameObject::setHeight(int height) {
@@ -73,7 +85,7 @@ void GameObject::setHeight(int height) {
 	collider.h = height;
 
 	// Update texture height
-	texture.setHeight(height);
+	texture->setHeight(height);
 }
 
 

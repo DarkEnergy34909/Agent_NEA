@@ -2,17 +2,10 @@
 #include <iostream>
 
 
-const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
 
 Game::Game() {
-	// Initialise SDL
-	//init();
-
-	// Load media
-	//loadMedia();
-
-	// Run the main loop
-	//mainLoop();
+	renderer = NULL;
+	window = NULL;
 }
 
 Game::~Game() {
@@ -106,14 +99,17 @@ void Game::mainLoop() {
 	SDL_Event e;
 
 	// Texture for testing 
-
 	Texture testTexture = Texture(renderer);
+
 	if (!testTexture.loadFromFile(PATH + "car_test_image.png")) {
 		std::cout << "Error loading test texture" << std::endl;
 	}
 
-	//testTexture.setColor(255, 0, 0);
-	//testTexture.setAlpha(128);
+	// First GameObject for testing
+	GameObject object1 = GameObject(testTexture, 100, 100, 200, 200);
+
+	// Second GameObject for testing
+	//GameObject object2 = GameObject(testTexture, 200, 200, 300, 300);
 
 	// Main loop
 	while (!quit) {
@@ -127,7 +123,10 @@ void Game::mainLoop() {
 			}
 			SDL_RenderClear(renderer);
 
-			testTexture.render(0, 0, NULL, 0, NULL, SDL_FLIP_HORIZONTAL);
+			// Render test objects
+			object1.render();
+			//object2.render();
+
 			SDL_RenderPresent(renderer);
 		}
 	}

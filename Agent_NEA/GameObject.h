@@ -7,13 +7,13 @@
 class GameObject {
 	public:
 		// Constructor
-		GameObject();
+		GameObject(Texture &texture, int posX, int posY, int width, int height);
 
 		// Destructor
 		~GameObject();
 
 		// Renders the GameObject
-		void render(bool isFlipped);
+		void render();
 
 		// Getters
 		int getPosX();
@@ -46,7 +46,7 @@ class GameObject {
 		int width, height;
 
 		// Sprite (texture) of the GameObject
-		Texture texture;
+		Texture* texture;
 
 		// Collider of the GameObject (to be used in collision detection)
 		SDL_Rect collider;

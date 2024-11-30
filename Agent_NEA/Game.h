@@ -6,6 +6,7 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 #include "Texture.h"
+#include "GameObject.h"
 
 class Game {
 	public:
@@ -35,6 +36,8 @@ class Game {
 		const int SCREEN_WIDTH = 640;
 		const int SCREEN_HEIGHT = 480;
 
+		// Path to media files
+		const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
 
 		// The window the game is rendered to 
 		SDL_Window* window; 
