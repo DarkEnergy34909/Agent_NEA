@@ -7,13 +7,13 @@
 class GameObject {
 	public:
 		// Constructor
-		GameObject(Texture &texture, int posX, int posY, int width, int height);
+		GameObject(Texture& texture, int posX, int posY, int width, int height);
 
 		// Destructor
 		~GameObject();
 
 		// Renders the GameObject
-		void render();
+		virtual void render();
 
 		// Getters
 		int getPosX();
@@ -38,7 +38,7 @@ class GameObject {
 
 
 
-	private:
+	protected:
 		// Position of the GameObject within the level
 		int posX, posY;
 

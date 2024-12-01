@@ -105,11 +105,28 @@ void Game::mainLoop() {
 		std::cout << "Error loading test texture" << std::endl;
 	}
 
+	Texture testTexture2 = Texture(renderer);
+	if (!testTexture2.loadFromFile(PATH + "car_test_image2.png")) {
+		std::cout << "Error loading test texture" << std::endl;
+	}
+
 	// First GameObject for testing
-	GameObject object1 = GameObject(testTexture, 100, 100, 200, 200);
+	//GameObject object1 = GameObject(testTexture, 0, 0, 300, 300);
 
 	// Second GameObject for testing
-	//GameObject object2 = GameObject(testTexture, 200, 200, 300, 300);
+	//GameObject object2 = GameObject(testTexture2, 300, 300, 100, 100);
+
+	// First Entity for testing
+	//Entity entity1 = Entity(testTexture, 0, 0, 200, 200);
+	//entity1.setVelX(1);
+	//entity1.setVelY(1);
+	
+	//entity1.addAnimationTexture(testTexture);
+	//entity1.addAnimationTexture(testTexture2);
+
+	// Player character for testing
+	Player player1 = Player(testTexture, 0, 0, 200, 200);
+
 
 	// Main loop
 	while (!quit) {
@@ -121,14 +138,28 @@ void Game::mainLoop() {
 			if (e.type == SDL_QUIT) {
 				quit = true;
 			}
-			SDL_RenderClear(renderer);
-
-			// Render test objects
-			object1.render();
-			//object2.render();
-
-			SDL_RenderPresent(renderer);
+			else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
+				player1.handleInput(e);
+			}
 		}
+
+		SDL_RenderClear(renderer);
+
+		// Render test objects
+		//object1.render();
+		//object2.render();
+
+		// Move and render test entity
+		//entity1.moveX();
+		//entity1.moveY();
+		//entity1.render();
+
+		// Move and render player
+		player1.moveX();
+		player1.moveY();
+		player1.render();
+
+		SDL_RenderPresent(renderer);
 	}
 
 	close();

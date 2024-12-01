@@ -7,6 +7,9 @@
 #include <SDL_ttf.h>
 #include "Texture.h"
 #include "GameObject.h"
+#include "Entity.h"
+#include "Character.h"
+#include "Player.h"
 
 class Game {
 	public:

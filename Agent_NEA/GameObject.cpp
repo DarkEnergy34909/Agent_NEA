@@ -16,6 +16,7 @@ GameObject::GameObject(Texture& texture, int posX, int posY, int width, int heig
 	collider.h = height;
 
 	// Initialise the texture 
+	//this->texture = &texture;
 	this->texture = &texture;
 	this->texture->setWidth(width);
 	this->texture->setHeight(height);
