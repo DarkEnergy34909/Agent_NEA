@@ -1,6 +1,6 @@
 #include "Character.h"
 
-Character::Character(Texture& texture, int posX, int posY, int width, int height) : Entity(texture, posX, posY, width, height) {
+Character::Character(Texture* texture, int posX, int posY, int width, int height) : Entity(texture, posX, posY, width, height) {
 	// Initialise hp
 	hp = hpMax;
 

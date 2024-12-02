@@ -10,6 +10,7 @@
 #include "Entity.h"
 #include "Character.h"
 #include "Player.h"
+#include "Level.h"
 
 class Game {
 	public:
@@ -47,6 +48,9 @@ class Game {
 
 		// The renderer that renders the game
 		SDL_Renderer* renderer; 
+
+		// The game level
+		Level* level;
 
 
 };

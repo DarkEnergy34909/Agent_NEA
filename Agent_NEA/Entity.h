@@ -5,7 +5,7 @@
 class Entity : public GameObject {
 	public:
 		// Constructor
-		Entity(Texture& texture, int posX, int posY, int width, int height);
+		Entity(Texture* texture, int posX, int posY, int width, int height);
 		
 		// Destructor
 		~Entity();
@@ -17,7 +17,7 @@ class Entity : public GameObject {
 		void moveY();
 
 		// Adds a texture to the animationTextures vector
-		void addAnimationTexture(Texture& texture);
+		void addAnimationTexture(Texture* texture);
 
 		// Renders the entity (overridden from GameObject)
 		void render() override;
@@ -41,7 +41,7 @@ class Entity : public GameObject {
 		int currentFrame = 0;
 
 		// How many frames to wait before moving onto the next texture
-		int frameDelay = 50;
+		int frameDelay = 15;
 
 		// Frame delay counter
 		int frameDelayCounter = 0;

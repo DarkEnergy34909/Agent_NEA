@@ -4,7 +4,7 @@
 class Character : public Entity {
 	public:
 		// Constructor
-		Character(Texture& texture, int posX, int posY, int width, int height);
+		Character(Texture* texture, int posX, int posY, int width, int height);
 
 		// Destructor
 		~Character();

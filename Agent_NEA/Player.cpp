@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(Texture& texture, int posX, int posY, int width, int height) : Character(texture, posX, posY, width, height) {
+Player::Player(Texture* texture, int posX, int posY, int width, int height) : Character(texture, posX, posY, width, height) {
 	// Do nothing
 }
 

@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(Texture& texture, int posX, int posY, int width, int height) : GameObject(texture, posX, posY, width, height) {
+Entity::Entity(Texture* texture, int posX, int posY, int width, int height) : GameObject(texture, posX, posY, width, height) {
 	// Initialise velocities
 	velX = 0;
 	velY = 0;
@@ -29,13 +29,13 @@ void Entity::moveY() {
 	collider.y = posY;
 }
 
-void Entity::addAnimationTexture(Texture& texture) {
+void Entity::addAnimationTexture(Texture* texture) {
 	// Modify the texture's dimensions to match that of the Entity
-	texture.setWidth(width);
-	texture.setHeight(height);
+	texture->setWidth(width);
+	texture->setHeight(height);
 
 	// Add a texture to the animationTextures vector
-	animationTextures.push_back(&texture);
+	animationTextures.push_back(texture);
 }
 
 void Entity::render() {

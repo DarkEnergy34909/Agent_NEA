@@ -7,7 +7,7 @@
 class GameObject {
 	public:
 		// Constructor
-		GameObject(Texture& texture, int posX, int posY, int width, int height);
+		GameObject(Texture* texture, int posX, int posY, int width, int height);
 
 		// Destructor
 		~GameObject();

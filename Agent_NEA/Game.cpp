@@ -6,6 +6,8 @@
 Game::Game() {
 	renderer = NULL;
 	window = NULL;
+
+	level = NULL;
 }
 
 Game::~Game() {
@@ -62,19 +64,32 @@ bool Game::init() {
 		return false;
 	}
 
+	// Initialise the game level
+	level = new Level(window, renderer);
+
 	return true; 
 
 }
 
 bool Game::loadMedia() {
-	// Load media
+	// Load level media
+	if (!level->loadLevel()) {
+		std::cout << "Error loading level" << std::endl;
+		return false;
+	}
 
-	// Load test texture
+	// Load level objects
+	if (!level->loadObjects()) {
+		std::cout << "Error loading objects" << std::endl;
+		return false;
+	}
 
 	return true;
 }
 
 void Game::close() {
+	// Delete the level
+	delete level;
 
 	// Close the renderer
 	SDL_DestroyRenderer(renderer);
@@ -98,36 +113,6 @@ void Game::mainLoop() {
 	// Input event
 	SDL_Event e;
 
-	// Texture for testing 
-	Texture testTexture = Texture(renderer);
-
-	if (!testTexture.loadFromFile(PATH + "car_test_image.png")) {
-		std::cout << "Error loading test texture" << std::endl;
-	}
-
-	Texture testTexture2 = Texture(renderer);
-	if (!testTexture2.loadFromFile(PATH + "car_test_image2.png")) {
-		std::cout << "Error loading test texture" << std::endl;
-	}
-
-	// First GameObject for testing
-	//GameObject object1 = GameObject(testTexture, 0, 0, 300, 300);
-
-	// Second GameObject for testing
-	//GameObject object2 = GameObject(testTexture2, 300, 300, 100, 100);
-
-	// First Entity for testing
-	//Entity entity1 = Entity(testTexture, 0, 0, 200, 200);
-	//entity1.setVelX(1);
-	//entity1.setVelY(1);
-	
-	//entity1.addAnimationTexture(testTexture);
-	//entity1.addAnimationTexture(testTexture2);
-
-	// Player character for testing
-	Player player1 = Player(testTexture, 0, 0, 200, 200);
-
-
 	// Main loop
 	while (!quit) {
 
@@ -138,31 +123,22 @@ void Game::mainLoop() {
 			if (e.type == SDL_QUIT) {
 				quit = true;
 			}
-			else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
-				player1.handleInput(e);
+			else {
+				level->handleInput(e);
 			}
 		}
 
+		// Clear previous frame
 		SDL_RenderClear(renderer);
 
-		// Render test objects
-		//object1.render();
-		//object2.render();
+		// Update the level
+		level->update();
 
-		// Move and render test entity
-		//entity1.moveX();
-		//entity1.moveY();
-		//entity1.render();
-
-		// Move and render player
-		player1.moveX();
-		player1.moveY();
-		player1.render();
-
+		// Render everything to the screen
 		SDL_RenderPresent(renderer);
-	}
 
-	close();
+
+	}
 }
 
 bool Game::start() {

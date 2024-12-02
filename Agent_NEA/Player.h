@@ -4,7 +4,7 @@
 class Player : public Character {
 	public:
 		// Constructor
-		Player(Texture& texture, int posX, int posY, int width, int height);
+		Player(Texture* texture, int posX, int posY, int width, int height);
 
 		// Destructor
 		~Player();
