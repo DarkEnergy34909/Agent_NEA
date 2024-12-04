@@ -24,6 +24,10 @@ class Tile {
 
 		bool isWall();
 
+		int getWidth();
+
+		int getHeight();
+
 		// Setters
 
 		void setWall(bool wall);

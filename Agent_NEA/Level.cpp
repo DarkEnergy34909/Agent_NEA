@@ -54,12 +54,42 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 }
 
 Level::~Level() {
-	// TODO: close()
+	// Close the level
+	close();
 }
 
 bool Level::init() {
 	// TODO
 	return false;
+}
+
+void Level::close() {
+	// Delete all game objects
+	for (auto& gameObject : gameObjects) {
+		delete gameObject;
+		gameObject = NULL;
+	}
+
+	// All entities/characters/player have already been deleted in the gameObjects vector
+	// So no need to delete them again
+
+	// Delete all tiles
+	for (auto& tile : tiles) {
+		delete tile;
+		tile = NULL;
+	}
+
+	// Delete all textures
+	for (auto& texture : textures) {
+		delete texture;
+		texture = NULL;
+	}
+
+	// Clear all vector containers
+	gameObjects.clear();
+	entities.clear();
+	characters.clear();
+	textures.clear();
 }
 
 bool Level::loadObjects() {
@@ -255,16 +285,85 @@ void Level::update() {
 }
 
 void Level::handleInput(SDL_Event& e) {
+	// Handle keypresses
 	if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
 		player->handleInput(e);
 	}
+
+	// TODO: handle other inputs
 }
 
 void Level::moveEntities() {
 	for (auto& entity : entities) {
+		// Move in the x direction
 		entity->moveX();
 
+		// Collision detection
+		for (auto& tile : tiles) {
+			if (isColliding(entity->getCollider(), tile->getTileCollider()) && tile->isWall()) {
+				std::cout << "Collision detected" << std::endl;
+
+				// Resolve collisions
+				
+				// If the entity is moving right (hits the left side of a wall) set its x position so that its right side is touching the left side of the wall
+				if (entity->getVelX() > 0) {
+					entity->setPosX(tile->getPosX() - entity->getWidth());
+				}
+
+				// If the entity is moving left (hits the right side of a wall) set its x position so that its left side is touching the right side of the wall
+				else if (entity->getVelX() < 0) {
+					entity->setPosX(tile->getPosX() + tile->getWidth());
+				}
+				
+			}
+		}
+
+		// Move in the y direction
 		entity->moveY();
-		// TODO: resolve collisions
+
+		// Collision detection in the y direction
+		for (auto& tile : tiles) {
+			if (isColliding(entity->getCollider(), tile->getTileCollider()) && tile->isWall()) {
+				std::cout << "Collision detected" << std::endl;
+
+				// Resolve collisions
+
+				// If the entity is moving down (hits the top side of a wall) set its y position so that its bottom side is touching the top side of the wall
+				if (entity->getVelY() > 0) {
+					entity->setPosY(tile->getPosY() - entity->getHeight());
+				}
+
+				// If the entity is moving up (hits the bottom side of a wall) set its y position so that its top side is touching the bottom side of the wall
+				else if (entity->getVelY() < 0) {
+					entity->setPosY(tile->getPosY() + tile->getHeight());
+				}
+			}
+		}
 	}
 }
+
+bool Level::isColliding(SDL_Rect a, SDL_Rect b) {
+	// Rectangles not colliding if the left edge of a is to the right of the right edge of b
+	if (a.x >= b.x + b.w) {
+		return false;
+	}
+
+	// Rectangles not colliding if the right edge of a is to the left of the left edge of b
+	if (a.x + a.w <= b.x) {
+		return false;
+	}
+
+	// Rectangles not colliding if the top edge of a is below the bottom edge of b
+	if (a.y >= b.y + b.h) {
+		return false;
+	}
+
+	// Rectangles not colliding if the bottom edge of a is above the top edge of b
+	if (a.y + a.h <= b.y) {
+		return false;
+	}
+
+	// If none of these are true, the rectangles are colliding
+	return true; 
+}
+

@@ -56,6 +56,16 @@ bool Tile::isWall() {
 	return wall;
 }
 
+int Tile::getWidth() {
+	// Return the width of the tile
+	return TILE_WIDTH;
+}
+
+int Tile::getHeight() {
+	// Return the height of the tile
+	return TILE_HEIGHT;
+}
+
 void Tile::setWall(bool wall) {
 	// Set whether the tile is a wall
 	this->wall = wall;

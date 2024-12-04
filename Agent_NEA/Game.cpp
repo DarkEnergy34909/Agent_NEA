@@ -90,6 +90,7 @@ bool Game::loadMedia() {
 void Game::close() {
 	// Delete the level
 	delete level;
+	level = NULL;
 
 	// Close the renderer
 	SDL_DestroyRenderer(renderer);
@@ -124,6 +125,7 @@ void Game::mainLoop() {
 				quit = true;
 			}
 			else {
+				// Handle input
 				level->handleInput(e);
 			}
 		}
@@ -136,7 +138,6 @@ void Game::mainLoop() {
 
 		// Render everything to the screen
 		SDL_RenderPresent(renderer);
-
 
 	}
 }

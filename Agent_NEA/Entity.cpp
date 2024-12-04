@@ -78,3 +78,13 @@ void Entity::setVelY(int velY) {
 	// Set the y velocity of the entity
 	this->velY = velY;
 }
+
+int Entity::getVelX() {
+	// Return the x velocity of the entity
+	return velX;
+}
+
+int Entity::getVelY() {
+	// Return the y velocity of the entity
+	return velY;
+}

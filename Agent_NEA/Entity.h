@@ -27,6 +27,11 @@ class Entity : public GameObject {
 
 		void setVelY(int velY);
 
+		// Getters 
+		int getVelX();
+
+		int getVelY();
+
 	protected:
 		// Maximum velocity of the entity
 		int velMax = 1;
