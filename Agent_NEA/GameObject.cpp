@@ -20,6 +20,9 @@ GameObject::GameObject(Texture* texture, int posX, int posY, int width, int heig
 	this->texture = texture;
 	this->texture->setWidth(width);
 	this->texture->setHeight(height);
+
+	// Set the object type to other by default
+	objectType = OTHER;
 }
 
 GameObject::~GameObject() {
@@ -49,6 +52,10 @@ int GameObject::getHeight() {
 
 SDL_Rect GameObject::getCollider() {
 	return collider;
+}
+
+int GameObject::getObjectType() {
+	return objectType;
 }
 
 void GameObject::setPosX(int x) {

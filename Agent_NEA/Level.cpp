@@ -114,6 +114,29 @@ bool Level::loadObjects() {
 		return false;
 	}
 
+	// Load pistol texture
+	Texture* pistolTexture = new Texture(renderer);
+	if (!pistolTexture->loadFromFile(PATH + "pistol.png")) {
+		std::cout << "Error loading pistol texture" << std::endl;
+		return false;
+	}
+	pistolTexture->setWidth(28);
+	pistolTexture->setHeight(19);
+
+	// Load bullet texture
+	Texture* bulletTexture = new Texture(renderer);
+	if (!bulletTexture->loadFromFile(PATH + "bullet.png")) {
+		std::cout << "Error loading bullet texture" << std::endl;
+		return false;
+	}
+
+	// Add textures to textures vector
+	textures.push_back(playerDefaultTexture);
+	textures.push_back(playerWalkTexture1);
+	textures.push_back(playerWalkTexture2);
+	textures.push_back(pistolTexture);
+	textures.push_back(bulletTexture);
+
 	// Load the player
 	Player* player = new Player(playerDefaultTexture, 0, 0, 50, 87);
 	if (player == NULL) {
@@ -126,6 +149,9 @@ bool Level::loadObjects() {
 	player->addAnimationTexture(playerWalkTexture1);
 	player->addAnimationTexture(playerDefaultTexture);
 	player->addAnimationTexture(playerWalkTexture2);
+
+	// Set the player's weapon
+	player->setWeapon(new Weapon(PISTOL, pistolTexture, bulletTexture));
 
 	// Set player
 	this->player = player;
@@ -286,8 +312,22 @@ void Level::update() {
 
 void Level::handleInput(SDL_Event& e) {
 	// Handle keypresses
-	if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
+	if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP || e.type == SDL_MOUSEMOTION) {
 		player->handleInput(e);
+	}
+	// Handle mouse clicks
+	else if (e.type == SDL_MOUSEBUTTONDOWN) {
+		// If the left mouse button is clicked, the player shoots their gun
+		if (e.button.button == SDL_BUTTON_LEFT) {
+			// Get the bullet fired by the player
+			Bullet* bullet = player->shoot();
+
+			// If the bullet is not null, add it to game containers
+			if (bullet != NULL) {
+				gameObjects.push_back(bullet);
+				entities.push_back(bullet);
+			}
+		}
 	}
 
 	// TODO: handle other inputs
@@ -304,9 +344,18 @@ void Level::moveEntities() {
 				std::cout << "Collision detected" << std::endl;
 
 				// Resolve collisions
+
+				// If the entity is a bullet, remove it from the game
+				if (entity->getObjectType() == BULLET) {
+					// Remove the bullet from the game
+					gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), entity), gameObjects.end());
+					entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
+					delete entity;
+					entity = NULL;
+				}
 				
 				// If the entity is moving right (hits the left side of a wall) set its x position so that its right side is touching the left side of the wall
-				if (entity->getVelX() > 0) {
+				else if (entity->getVelX() > 0) {
 					entity->setPosX(tile->getPosX() - entity->getWidth());
 				}
 
@@ -327,6 +376,15 @@ void Level::moveEntities() {
 				std::cout << "Collision detected" << std::endl;
 
 				// Resolve collisions
+
+				// If the entity is a bullet, remove it from the game
+				if (entity->getObjectType() == BULLET) {
+					// Remove the bullet from the game
+					gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), entity), gameObjects.end());
+					entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
+					delete entity;
+					entity = NULL;
+				}
 
 				// If the entity is moving down (hits the top side of a wall) set its y position so that its bottom side is touching the top side of the wall
 				if (entity->getVelY() > 0) {

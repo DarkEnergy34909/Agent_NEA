@@ -1,5 +1,7 @@
 #pragma once
 #include "Entity.h"
+#include "Weapon.h"
+#include "Bullet.h"
 
 class Character : public Entity {
 	public:
@@ -12,10 +14,16 @@ class Character : public Entity {
 		// Reduces the character's hp by a given amount
 		void takeDamage(int damage);
 
-		// TODO: shoot method
-		// void shoot();
+		// Adds a weapon to the character
+		void setWeapon(Weapon* weapon);
 
-	private:
+		// Renders the character and the weapon (if the character has one)
+		void render() override; 
+
+		// Returns a bullet fired by the character
+		Bullet* shoot();
+
+	protected:
 		// Maximum hp of the character
 		int hpMax = 100;
 
@@ -25,6 +33,6 @@ class Character : public Entity {
 		// Whether the character is alive
 		bool alive;
 
-		// TODO: weapon attribute
-		// Weapon weapon;
+		// The character's weapon
+		Weapon* weapon;
 };

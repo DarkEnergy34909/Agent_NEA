@@ -1,7 +1,8 @@
 #include "Player.h"
 
 Player::Player(Texture* texture, int posX, int posY, int width, int height) : Character(texture, posX, posY, width, height) {
-	// Do nothing
+	// Set the object type
+	objectType = PLAYER;
 }
 
 Player::~Player() {
@@ -58,5 +59,39 @@ void Player::handleInput(SDL_Event& e) {
 				velX -= velMax;
 				break;
 		}
+	}
+
+	// If the mouse is moved adjust the angle of the weapon
+	else if (e.type == SDL_MOUSEMOTION) {
+		std::cout << "Mouse moved" << std::endl;
+		// Get the position of the cursor
+		int mouseX, mouseY;
+		SDL_GetMouseState(&mouseX, &mouseY);
+
+		// Calculate the angle between the player's weapon and the cursor
+		double angle = 0; 
+
+		// Check the weapon type and calculate the angle accordingly
+		switch (weapon->getWeaponType()) {
+			case PISTOL:
+				// Calculate the angle between the player and the cursor
+				//angle = atan2(mouseY - (posY + (height / 2)), mouseX - (posX + (3 * width / 4)));
+				angle = atan2(mouseY - (posY + (height / 2)), mouseX - (posX + (width / 2)));
+
+				// Convert the angle from radians to degrees
+				angle = angle * 180 / M_PI;
+
+				// Subtract the angle from 360 degrees as weapon rotation is clockwise
+				//angle = 360 - angle; COMMENTING THIS OUT TO SEE IF IT FIXES THE ISSUE
+				break;
+
+			default:
+				// If the weapon type is invalid, print an error message
+				std::cout << "Invalid weapon type" << std::endl;
+				break;
+		}
+		// Set the angle of the weapon
+		weapon->setAngle(angle);
+
 	}
 }

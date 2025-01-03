@@ -20,7 +20,7 @@ class Entity : public GameObject {
 		void addAnimationTexture(Texture* texture);
 
 		// Renders the entity (overridden from GameObject)
-		void render() override;
+		virtual void render() override;
 
 		// Setters (for testing)
 		void setVelX(int velX);

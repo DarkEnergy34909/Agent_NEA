@@ -3,6 +3,12 @@
 #include <SDL_image.h>
 #include "Texture.h"
 
+enum ObjectType {
+	PLAYER,
+	ENEMY,
+	BULLET,
+	OTHER
+};
 
 class GameObject {
 	public:
@@ -25,6 +31,8 @@ class GameObject {
 		int getHeight();
 
 		SDL_Rect getCollider();
+
+		int getObjectType();
 
 		// Setters
 
@@ -50,6 +58,9 @@ class GameObject {
 
 		// Collider of the GameObject (to be used in collision detection)
 		SDL_Rect collider;
+
+		// The type of the GameObject
+		int objectType;
 		
 
 };
