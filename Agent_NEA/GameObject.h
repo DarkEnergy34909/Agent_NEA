@@ -16,7 +16,7 @@ class GameObject {
 		GameObject(Texture* texture, int posX, int posY, int width, int height);
 
 		// Destructor
-		~GameObject();
+		virtual ~GameObject();
 
 		// Renders the GameObject
 		virtual void render();

@@ -71,7 +71,7 @@ void Character::render() {
 				}
 				// If the weapon is pointed to the left, render the gun to the left of the character
 				else {
-					weapon->render(posX - (width / 4), posY + (height / 2));
+					weapon->render(posX + (width / 4) - weapon->getTexture()->getWidth(), posY + (height / 2));
 				}
 				break;
 			default:
@@ -114,8 +114,7 @@ Bullet* Character::shoot() {
 		// If the weapon is pointed to the left, the bullet is fired to the left of the character
 		else {
 			// Calculate x position of the bullet
-			//double bulletX = posX - ((width / 4) * cos(weapon->getAngle() * M_PI / 180)) - weapon->getBulletTexture()->getWidth();
-			double bulletX = posX - (width / 4) - weapon->getBulletTexture()->getWidth();
+			double bulletX = posX + (width / 4) - weapon->getTexture()->getWidth() - weapon->getBulletTexture()->getWidth();
 			bulletX = int(bulletX);
 
 			// Calculate y position of the bullet

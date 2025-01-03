@@ -138,7 +138,8 @@ bool Level::loadObjects() {
 	textures.push_back(bulletTexture);
 
 	// Load the player
-	Player* player = new Player(playerDefaultTexture, 0, 0, 50, 87);
+	//Player* player = new Player(playerDefaultTexture, 0, 0, 50, 87);
+	Player* player = new Player(playerDefaultTexture, 0, 0, 40, 70);
 	if (player == NULL) {
 		std::cout << "Error loading player" << std::endl;
 		return false;
@@ -334,7 +335,18 @@ void Level::handleInput(SDL_Event& e) {
 }
 
 void Level::moveEntities() {
-	for (auto& entity : entities) {
+
+	// Iterate over all entities
+	for (auto& entity: entities) {
+		//for (auto& e : entities) {
+			//std::cout << e << ", ";
+		//}
+		//std::cout << std::endl;
+		// Get the entity
+		//Entity* entity = *entityIterator;
+
+		bool isDeleted = false;
+
 		// Move in the x direction
 		entity->moveX();
 
@@ -347,11 +359,8 @@ void Level::moveEntities() {
 
 				// If the entity is a bullet, remove it from the game
 				if (entity->getObjectType() == BULLET) {
-					// Remove the bullet from the game
-					gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), entity), gameObjects.end());
-					entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
-					delete entity;
-					entity = NULL;
+					// Mark the bullet to be deleted
+					isDeleted = true;
 				}
 				
 				// If the entity is moving right (hits the left side of a wall) set its x position so that its right side is touching the left side of the wall
@@ -367,37 +376,96 @@ void Level::moveEntities() {
 			}
 		}
 
-		// Move in the y direction
-		entity->moveY();
-
-		// Collision detection in the y direction
-		for (auto& tile : tiles) {
-			if (isColliding(entity->getCollider(), tile->getTileCollider()) && tile->isWall()) {
-				std::cout << "Collision detected" << std::endl;
-
-				// Resolve collisions
-
-				// If the entity is a bullet, remove it from the game
+		if (!isDeleted) {
+			if (entity->getPosX() < 0) {
 				if (entity->getObjectType() == BULLET) {
-					// Remove the bullet from the game
-					gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), entity), gameObjects.end());
-					entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
-					delete entity;
-					entity = NULL;
+					isDeleted = true;
 				}
-
-				// If the entity is moving down (hits the top side of a wall) set its y position so that its bottom side is touching the top side of the wall
-				if (entity->getVelY() > 0) {
-					entity->setPosY(tile->getPosY() - entity->getHeight());
+				else {
+					entity->setPosX(0);
 				}
-
-				// If the entity is moving up (hits the bottom side of a wall) set its y position so that its top side is touching the bottom side of the wall
-				else if (entity->getVelY() < 0) {
-					entity->setPosY(tile->getPosY() + tile->getHeight());
+			}
+			else if (entity->getPosX() + entity->getWidth() > LEVEL_WIDTH) {
+				if (entity->getObjectType() == BULLET) {
+					isDeleted = true;
+				}
+				else {
+					entity->setPosX(LEVEL_WIDTH - entity->getWidth());
 				}
 			}
 		}
+
+		// If the entity has not been deleted, move in the y direction
+		if (!isDeleted) {
+			// Move in the y direction
+			entity->moveY();
+
+			// Collision detection in the y direction
+			for (auto& tile : tiles) {
+				if (isColliding(entity->getCollider(), tile->getTileCollider()) && tile->isWall()) {
+					std::cout << "Collision detected" << std::endl;
+
+					// Resolve collisions
+
+					// If the entity is a bullet, remove it from the game
+					if (entity->getObjectType() == BULLET) {
+						// Mark the bullet to be deleted
+						isDeleted = true;
+
+					}
+
+					// If the entity is moving down (hits the top side of a wall) set its y position so that its bottom side is touching the top side of the wall
+					else if (entity->getVelY() > 0) {
+						entity->setPosY(tile->getPosY() - entity->getHeight());
+					}
+
+					// If the entity is moving up (hits the bottom side of a wall) set its y position so that its top side is touching the bottom side of the wall
+					else if (entity->getVelY() < 0) {
+						entity->setPosY(tile->getPosY() + tile->getHeight());
+					}
+				}
+			}
+		}
+
+		if (!isDeleted) {
+			if (entity->getPosY() < 0) {
+				if (entity->getObjectType() == BULLET) {
+					isDeleted = true;
+				}
+				else {
+					entity->setPosY(0);
+				}
+			}
+			else if (entity->getPosY() + entity->getHeight() > LEVEL_HEIGHT) {
+				if (entity->getObjectType() == BULLET) {
+					isDeleted = true;
+				}
+				else {
+					entity->setPosY(LEVEL_HEIGHT - entity->getHeight());
+				}
+			}
+		}
+
+		// If entity has been deleted, delete it
+		if (isDeleted) {
+			// Set entity to null in gameObjects vector
+			for (auto& gameObject : gameObjects) {
+				if (gameObject == entity) {
+					gameObject = NULL;
+				}
+			}
+
+			// Delete the entity
+			delete entity;
+
+			// Set entity to null in entities vector
+			entity = NULL;
+		}
 	}
+
+	// Remove all deleted entities from game containers
+	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), nullptr), gameObjects.end());
+	entities.erase(std::remove(entities.begin(), entities.end(), nullptr), entities.end());
 }
 
 bool Level::isColliding(SDL_Rect a, SDL_Rect b) {

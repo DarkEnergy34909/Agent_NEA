@@ -8,7 +8,7 @@ class Entity : public GameObject {
 		Entity(Texture* texture, int posX, int posY, int width, int height);
 		
 		// Destructor
-		~Entity();
+		virtual ~Entity();
 
 		// Moves the entity in the x-direction
 		void moveX();
