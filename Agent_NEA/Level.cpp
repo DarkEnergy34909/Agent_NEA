@@ -30,6 +30,9 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set player to null initially
 	player = NULL;
 
+	// Set enemy to null initially
+	enemy = NULL;
+
 	// Initialise tiles to null initially
 	for (int i = 0; i < TOTAL_TILES; i++) {
 		tiles[i] = NULL;
@@ -162,7 +165,28 @@ bool Level::loadObjects() {
 	entities.push_back(player);
 	characters.push_back(player);
 
-	// TODO: Load enemies
+	// Load test enemy
+	Enemy* enemy = new Enemy(playerDefaultTexture, 500, 500, 40, 70, BASIC);
+	if (enemy == NULL) {
+		std::cout << "Error loading enemy" << std::endl;
+		return false;
+	}
+
+	// Add animations
+	enemy->addAnimationTexture(playerDefaultTexture);
+	enemy->addAnimationTexture(playerWalkTexture1);
+	enemy->addAnimationTexture(playerDefaultTexture);
+	enemy->addAnimationTexture(playerWalkTexture2);
+
+	// Set the enemy's weapon
+	enemy->setWeapon(new Weapon(PISTOL, pistolTexture, bulletTexture));
+
+	this->enemy = enemy;
+
+	// Add enemy to containers
+	gameObjects.push_back(enemy);
+	entities.push_back(enemy);
+	characters.push_back(enemy);
 
 	return true;
 }
@@ -304,6 +328,12 @@ void Level::render() {
 }
 
 void Level::update() {
+	// Update the test enemy
+	enemy->moveTo(player->getPosX(), player->getPosY());
+
+	// Update characters
+	updateCharacters();
+
 	// Move all entities
 	moveEntities();
 
@@ -327,6 +357,7 @@ void Level::handleInput(SDL_Event& e) {
 			if (bullet != NULL) {
 				gameObjects.push_back(bullet);
 				entities.push_back(bullet);
+				bullets.push_back(bullet);
 			}
 		}
 	}
@@ -466,6 +497,76 @@ void Level::moveEntities() {
 	// Remove all deleted entities from game containers
 	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), nullptr), gameObjects.end());
 	entities.erase(std::remove(entities.begin(), entities.end(), nullptr), entities.end());
+}
+
+void Level::updateCharacters() {
+	// Iterate through characters 
+	for (auto& character : characters) {
+
+		// Iterate through bullets to check for collisions
+		for (auto& bullet : bullets) {
+
+			// Check if the bullet is colliding with the character
+			if (isColliding(bullet->getCollider(), character->getCollider())) {
+
+				// If the bullet is colliding with the character, deal damage to the character
+				character->takeDamage(bullet->getDamage());
+
+				// Remove the bullet from the game
+				// Set bullet to null in gameObjects vector
+				for (auto& gameObject : gameObjects) {
+					if (gameObject == bullet) {
+						gameObject = NULL;
+					}
+				}
+
+				// Set bullet to null in entities vector
+				for (auto& entity : entities) {
+					if (entity == bullet) {
+						entity = NULL;
+					}
+				}
+
+				// Delete the bullet
+				delete bullet;
+
+				// Set bullet to null in bullets vector
+				bullet = NULL;
+
+			}
+		}
+
+
+		// If the character is dead, remove it from the game
+		if (!character->isAlive()) {
+			// Set character to null in gameObjects vector
+			for (auto& gameObject : gameObjects) {
+				if (gameObject == character) {
+					gameObject = NULL;
+				}
+			}
+
+			// Set character to null in entities vector
+			for (auto& entity : entities) {
+				if (entity == character) {
+					entity = NULL;
+				}
+			}
+
+			// Delete the character
+			delete character;
+
+			// Set character to null in characters vector
+			character = NULL;
+		}
+	}
+
+	// Remove all deleted characters and bullets from game containers
+	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), nullptr), gameObjects.end());
+	entities.erase(std::remove(entities.begin(), entities.end(), nullptr), entities.end());
+	characters.erase(std::remove(characters.begin(), characters.end(), nullptr), characters.end());
+	bullets.erase(std::remove(bullets.begin(), bullets.end(), nullptr), bullets.end());
+
 }
 
 bool Level::isColliding(SDL_Rect a, SDL_Rect b) {

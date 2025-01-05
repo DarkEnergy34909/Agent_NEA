@@ -22,13 +22,13 @@ class Enemy : public Character {
 		void moveTo(int x, int y);
 
 		// Calculates a path to a point and returns the next point in the path
-		std::pair<int, int> calculatePath(int x, int y, int levelGrid[4][4]);
+		std::pair<int, int> calculatePath(int x, int y, int levelGrid[6][8]);
 
 		// Detects whether a point is within the enemy's cone of vision
-		bool pointInVision(int x, int y);
+		bool colliderInVision(SDL_Rect collider);
 
 		// Renders the enemy and its vision cone
-		void render() override;
+		//void render() override;
 	private:
 		// The distance at which the enemy can see the player
 		int visionRadius;
@@ -39,4 +39,8 @@ class Enemy : public Character {
 		// The awareness level of the enemy
 		int awareness;
 
+		// The type of enemy
+		int enemyType;
+
 };
+

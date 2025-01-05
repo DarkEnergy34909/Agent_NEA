@@ -83,7 +83,7 @@ void Character::render() {
 }
 
 void Character::setWeapon(Weapon* weapon) {
-	// Delete the current weapon if the Characte has one
+	// Delete the current weapon if the Character has one
 	if (this->weapon != NULL) {
 		delete this->weapon;
 		this->weapon = NULL;
@@ -131,4 +131,9 @@ Bullet* Character::shoot() {
 		// If the character has no weapon, return NULL
 		return NULL;
 	}
+}
+
+bool Character::isAlive() {
+	// Return whether the character is alive
+	return alive; 
 }

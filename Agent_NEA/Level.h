@@ -7,6 +7,7 @@
 #include "Entity.h"
 #include "Character.h"
 #include "Player.h"
+#include "Enemy.h"
 
 class Level {
 	public: 
@@ -36,6 +37,9 @@ class Level {
 
 		// Moves all entities and resolves collisions
 		void moveEntities();
+
+		// Updates the state of all characters
+		void updateCharacters();
 
 		// Detects a collision between two rectangles
 		bool isColliding(SDL_Rect a, SDL_Rect b);
@@ -89,10 +93,14 @@ class Level {
 		std::vector<GameObject*> gameObjects;
 		std::vector<Entity*> entities;
 		std::vector<Character*> characters;
+		std::vector<Bullet*> bullets;
 		std::vector<Texture*> textures;
 
 		// The player character
 		Player* player; 
+
+		// A test enemy
+		Enemy* enemy;
 
 		// Whether the level is paused
 		bool paused;

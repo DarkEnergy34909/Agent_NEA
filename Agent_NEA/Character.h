@@ -9,7 +9,7 @@ class Character : public Entity {
 		Character(Texture* texture, int posX, int posY, int width, int height);
 
 		// Destructor
-		~Character();
+		virtual ~Character();
 
 		// Reduces the character's hp by a given amount
 		void takeDamage(int damage);
@@ -22,6 +22,9 @@ class Character : public Entity {
 
 		// Returns a bullet fired by the character
 		Bullet* shoot();
+
+		// Returns whether the character is alive
+		bool isAlive();
 
 	protected:
 		// Maximum hp of the character
