@@ -1,5 +1,7 @@
 #pragma once
 #include "Character.h"
+#include <queue>
+#include <unordered_map>
 
 enum Awareness {
 	PASSIVE,
@@ -8,6 +10,11 @@ enum Awareness {
 
 enum EnemyType {
 	BASIC
+};
+
+struct GridPosition {
+	int x;
+	int y;
 };
 
 class Enemy : public Character {
@@ -41,6 +48,10 @@ class Enemy : public Character {
 
 		// The type of enemy
 		int enemyType;
+
+		// Gets adjacent grid positions
+		std::vector<GridPosition> getAdjacentPositions(GridPosition position, int levelGrid[6][8]);
+
 
 };
 
