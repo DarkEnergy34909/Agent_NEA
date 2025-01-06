@@ -69,8 +69,8 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	std::map<GridPosition, GridPosition> visited;
 
 	// Calculate starting position on the grid
-	int startingPosX = (this->posX / 640) * 8; // TODO: Replace these values with constants 
-	int startingPosY = (this->posY / 480) * 6;
+	int startingPosX = (this->posX / 640.0) * 8.0; // TODO: Replace these values with constants 
+	int startingPosY = (this->posY / 480.0) * 6.0;
 
 	GridPosition startingPosition = { startingPosX, startingPosY };
 
@@ -81,8 +81,8 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	visited[startingPosition] = { -1, -1 };
 
 	// Calculate the target position
-	int targetPosX = (x / 640) * 8;
-	int targetPosY = (y / 480) * 6;
+	int targetPosX = (x / 640.0) * 8.0;
+	int targetPosY = (y / 480) * 6.0;
 
 	GridPosition targetPosition = { targetPosX, targetPosY };
 
@@ -122,14 +122,14 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	}
 
 	// If the target position has been reached, backtrack through the visited map and return the next position in the path
-	while (visited[currentPosition] != startingPosition || visited[currentPosition] != GridPosition{-1, -1}) {
+	while (visited[currentPosition] != startingPosition && visited[currentPosition] != GridPosition{-1, -1}) {
 		// Set the current position to the previous position in the path
 		currentPosition = visited[currentPosition];
 	}
 
 	// Calculate the actual x and y position of the next position in the path
-	int nextX = (currentPosition.first / 8) * 640;
-	int nextY = (currentPosition.second / 6) * 480;
+	int nextX = (currentPosition.first / 8.0) * 640.0;
+	int nextY = (currentPosition.second / 6.0) * 480.0;
 
 	// Return the next position in the path
 	return { nextX, nextY };
