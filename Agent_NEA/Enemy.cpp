@@ -66,7 +66,7 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	std::queue<GridPosition> positionQueue;
 
 	// Initialise a map to store visited positions and their previous positions
-	std::unordered_map<GridPosition, GridPosition> visited;
+	std::map<GridPosition, GridPosition> visited;
 
 	// Calculate starting position on the grid
 	int startingPosX = (this->posX / 640) * 8; // TODO: Replace these values with constants 
@@ -90,7 +90,7 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	GridPosition currentPosition = startingPosition;
 
 	// While the target position has not been reached
-	while (currentPosition.x != targetPosition.x && currentPosition.y != targetPosition.y) {
+	while (currentPosition != targetPosition) {
 
 		// If the queue is empty return a dummy value as there is no path to the target
 		if (positionQueue.empty()) {
@@ -122,14 +122,14 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	}
 
 	// If the target position has been reached, backtrack through the visited map and return the next position in the path
-	while ((visited[currentPosition].x != startingPosition.x && visited[currentPosition].y != startingPosition.y) || (visited[currentPosition].x != -1 && visited[currentPosition].y != -1)) {
+	while (visited[currentPosition] != startingPosition || visited[currentPosition] != GridPosition{-1, -1}) {
 		// Set the current position to the previous position in the path
 		currentPosition = visited[currentPosition];
 	}
 
 	// Calculate the actual x and y position of the next position in the path
-	int nextX = (currentPosition.x / 8) * 640;
-	int nextY = (currentPosition.y / 6) * 480;
+	int nextX = (currentPosition.first / 8) * 640;
+	int nextY = (currentPosition.second / 6) * 480;
 
 	// Return the next position in the path
 	return { nextX, nextY };
@@ -144,41 +144,41 @@ std::vector<GridPosition> Enemy::getAdjacentPositions(GridPosition position, int
 	std::vector<GridPosition> adjacentPositions;
 
 	// Get the node to the left of the current node if it is within the grid
-	if (position.x != 0) {
-		GridPosition left = { position.x - 1, position.y };
+	if (position.first != 0) {
+		GridPosition left = { position.first - 1, position.second };
 
 		// If the node is not a wall, add it to the vector
-		if (levelGrid[left.y][left.x] == 0) {
+		if (levelGrid[left.second][left.first] == 0) {
 			adjacentPositions.push_back(left);
 		}
 	}
 
 	// Get the node to the right of the current node if it is within the grid
-	if (position.x != 7) {
-		GridPosition right = { position.x + 1, position.y };
+	if (position.first != 7) {
+		GridPosition right = { position.first + 1, position.second };
 
 		// If the node is not a wall, add it to the vector
-		if (levelGrid[right.y][right.x] == 0) {
+		if (levelGrid[right.second][right.first] == 0) {
 			adjacentPositions.push_back(right);
 		}
 	}
 
 	// Get the node above the current node if it is within the grid
-	if (position.y != 0) {
-		GridPosition up = { position.x, position.y - 1 };
+	if (position.second != 0) {
+		GridPosition up = { position.first, position.second - 1 };
 
 		// If the node is not a wall, add it to the vector
-		if (levelGrid[up.y][up.x] == 0) {
+		if (levelGrid[up.second][up.first] == 0) {
 			adjacentPositions.push_back(up);
 		}
 	}
 
 	// Get the node below the current node if it is within the grid
-	if (position.y != 5) {
-		GridPosition down = { position.x, position.y + 1 };
+	if (position.second != 5) {
+		GridPosition down = { position.first, position.second + 1 };
 
 		// If the node is not a wall, add it to the vector
-		if (levelGrid[down.y][down.x] == 0) {
+		if (levelGrid[down.second][down.first] == 0) {
 			adjacentPositions.push_back(down);
 		}
 	}

@@ -1,7 +1,7 @@
 #pragma once
 #include "Character.h"
 #include <queue>
-#include <unordered_map>
+#include <map>
 
 enum Awareness {
 	PASSIVE,
@@ -12,10 +12,7 @@ enum EnemyType {
 	BASIC
 };
 
-struct GridPosition {
-	int x;
-	int y;
-};
+typedef std::pair<int, int> GridPosition;
 
 class Enemy : public Character {
 	public:

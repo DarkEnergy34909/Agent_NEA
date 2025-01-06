@@ -329,9 +329,9 @@ void Level::render() {
 
 void Level::update() {
 	// Update the test enemy
-	//enemy->moveTo(player->getPosX(), player->getPosY());
-	std::pair<int, int> nextPos = enemy->calculatePath(player->getPosX(), player->getPosY(), levelGrid);
-	enemy->moveTo(nextPos.first, nextPos.second);
+	enemy->moveTo(player->getPosX(), player->getPosY());
+	//std::pair<int, int> nextPos = enemy->calculatePath(player->getPosX(), player->getPosY(), levelGrid);
+	//enemy->moveTo(nextPos.first, nextPos.second);
 
 	// Update characters
 	updateCharacters();
