@@ -82,7 +82,7 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 
 	// Calculate the target position
 	int targetPosX = (x / 640.0) * 8.0;
-	int targetPosY = (y / 480) * 6.0;
+	int targetPosY = (y / 480.0) * 6.0;
 
 	GridPosition targetPosition = { targetPosX, targetPosY };
 
