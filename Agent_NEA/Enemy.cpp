@@ -6,6 +6,7 @@ Enemy::Enemy(Texture* texture, int posX, int posY, int width, int height, int en
 
 	// Initialise the enemy's type
 	this->enemyType = enemyType;
+	this->objectType = ENEMY;
 
 	// Initialise the enemy's attributes based on its type
 	switch (enemyType) {
@@ -130,6 +131,13 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	// Calculate the actual x and y position of the next position in the path
 	int nextX = (currentPosition.first / 8.0) * 640.0;
 	int nextY = (currentPosition.second / 6.0) * 480.0;
+
+	// Convert x and y position so the enemy moves to the centre of the tile
+	nextX += 80 / 2;
+	nextX -= this->width / 2;
+
+	nextY += 80 / 2;
+	nextY -= this->height / 2;
 
 	// Return the next position in the path
 	return { nextX, nextY };

@@ -328,10 +328,11 @@ void Level::render() {
 }
 
 void Level::update() {
-	// Update the test enemy
-	//enemy->moveTo(player->getPosX(), player->getPosY());
-	std::pair<int, int> nextPos = enemy->calculatePath(player->getPosX(), player->getPosY(), levelGrid);
-	enemy->moveTo(nextPos.first, nextPos.second);
+	// Update test enemy
+	if (enemy != NULL) {
+		std::pair<int, int> nextPos = enemy->calculatePath(player->getPosX(), player->getPosY(), levelGrid);
+		enemy->moveTo(nextPos.first, nextPos.second);
+	}
 
 	// Update characters
 	updateCharacters();
@@ -553,6 +554,11 @@ void Level::updateCharacters() {
 				if (entity == character) {
 					entity = NULL;
 				}
+			}
+
+			// If the character the enemy, set enemy to null
+			if (character == enemy) {
+				enemy = NULL;
 			}
 
 			// Delete the character
