@@ -330,7 +330,11 @@ void Level::render() {
 void Level::update() {
 	// Update test enemy
 	if (enemy != NULL) {
-		std::pair<int, int> nextPos = enemy->calculatePath(player->getPosX(), player->getPosY(), levelGrid);
+		// Convert player position to centre of tile
+		int targetPosX = player->getPosX() + player->getWidth() / 2;
+		int targetPosY = player->getPosY() + player->getHeight() / 2;
+
+		std::pair<int, int> nextPos = enemy->calculatePath(targetPosX, targetPosY, levelGrid);
 		enemy->moveTo(nextPos.first, nextPos.second);
 	}
 
