@@ -60,18 +60,24 @@ void Weapon::render(int posX, int posY) {
 
 Bullet* Weapon::fire(int posX, int posY) {
 	// If the weapon has ammo, create a bullet and return it
-	if (currentAmmo > 0) {
+	if (/*currentAmmo > 0*/ true) {
 		// Create a new bullet
 		Bullet* bullet = new Bullet(bulletTexture, posX, posY, angle, damage);
 
 		// Reduce the current ammo of the weapon by 1
 		currentAmmo--;
 
+		// Begin reloading the weapon
+		if (currentAmmo == 0) {
+			// TODO: Start a timer to reload the weapon
+		}
+
 		// Return the bullet
 		return bullet;
 	}
 
 	else {
+
 		// If the weapon has no ammo, return NULL
 		return NULL;
 	}

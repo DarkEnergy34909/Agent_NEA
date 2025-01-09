@@ -21,10 +21,13 @@ class Character : public Entity {
 		virtual void render() override; 
 
 		// Returns a bullet fired by the character
-		Bullet* shoot();
+		Bullet* shoot(int x = -999, int y = -999);
 
 		// Returns whether the character is alive
 		bool isAlive();
+
+		// Returns the current hp of the character
+		int getHp();
 
 	protected:
 		// Maximum hp of the character

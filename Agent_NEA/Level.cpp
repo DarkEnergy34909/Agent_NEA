@@ -54,6 +54,9 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Level is not paused initially
 	paused = false;
+
+	// Set level timer to 0
+	levelTimer = 0;
 }
 
 Level::~Level() {
@@ -336,16 +339,35 @@ void Level::update() {
 
 		std::pair<int, int> nextPos = enemy->calculatePath(targetPosX, targetPosY, levelGrid);
 		enemy->moveTo(nextPos.first, nextPos.second);
+
+		// Make the enemy attack the player if they are in range
+
+		// Get the Bullet shot by the Enemy
+		if (levelTimer % 100 == 0) {
+			Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
+
+			// Add the bullet to the game containers
+			if (bullet != NULL) {
+				gameObjects.push_back(bullet);
+				entities.push_back(bullet);
+				bullets.push_back(bullet);
+			}
+		}
 	}
 
 	// Update characters
 	updateCharacters();
+
+	std::cout << "Player health: " << player->getHp() << "/100" << std::endl;
 
 	// Move all entities
 	moveEntities();
 
 	// Render the level
 	render();
+
+	// Update the level timer
+	levelTimer = SDL_GetTicks();
 }
 
 void Level::handleInput(SDL_Event& e) {
@@ -514,7 +536,7 @@ void Level::updateCharacters() {
 		for (auto& bullet : bullets) {
 
 			// Check if the bullet is colliding with the character
-			if (isColliding(bullet->getCollider(), character->getCollider())) {
+			if (bullet != NULL && isColliding(bullet->getCollider(), character->getCollider())) {
 
 				// If the bullet is colliding with the character, deal damage to the character
 				character->takeDamage(bullet->getDamage());

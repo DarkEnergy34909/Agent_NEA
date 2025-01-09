@@ -105,6 +105,7 @@ class Level {
 		// Whether the level is paused
 		bool paused;
 
-
+		// The level timer
+		int levelTimer;
 
 };
