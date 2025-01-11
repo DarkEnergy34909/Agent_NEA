@@ -114,7 +114,7 @@ int Weapon::getReloadTime() {
 }
 
 void Weapon::setAngle(double angle) {
-	// Set the angle of the weapon
+	// Set the angle of the weapons
 	this->angle = angle;
 }
 

@@ -57,6 +57,9 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Set level timer to 0
 	levelTimer = 0;
+
+	// Set shoot sound to null initially
+	shootSound = NULL;
 }
 
 Level::~Level() {
@@ -136,12 +139,48 @@ bool Level::loadObjects() {
 		return false;
 	}
 
+	// Load vision texture
+	Texture* visionTexture = new Texture(renderer);
+	if (!visionTexture->loadFromFile(PATH + "vision_circle.png")) {
+		std::cout << "Error loading vision texture" << std::endl;
+		return false;
+	}
+	// Vision radius must be transparent
+	visionTexture->setAlpha(96);
+
 	// Add textures to textures vector
 	textures.push_back(playerDefaultTexture);
 	textures.push_back(playerWalkTexture1);
 	textures.push_back(playerWalkTexture2);
 	textures.push_back(pistolTexture);
 	textures.push_back(bulletTexture);
+	textures.push_back(visionTexture);
+
+	// Load test enemy
+	Enemy* enemy = new Enemy(playerDefaultTexture, 500, 500, 40, 70, BASIC);
+	if (enemy == NULL) {
+		std::cout << "Error loading enemy" << std::endl;
+		return false;
+	}
+
+	// Add animations
+	enemy->addAnimationTexture(playerDefaultTexture);
+	enemy->addAnimationTexture(playerWalkTexture1);
+	enemy->addAnimationTexture(playerDefaultTexture);
+	enemy->addAnimationTexture(playerWalkTexture2);
+
+	// Set the enemy's weapon
+	enemy->setWeapon(new Weapon(PISTOL, pistolTexture, bulletTexture));
+
+	// Add the enemy's vision texture
+	enemy->setVisionTexture(visionTexture);
+
+	this->enemy = enemy;
+
+	// Add enemy to containers
+	gameObjects.push_back(enemy);
+	entities.push_back(enemy);
+	characters.push_back(enemy);
 
 	// Load the player
 	//Player* player = new Player(playerDefaultTexture, 0, 0, 50, 87);
@@ -168,28 +207,9 @@ bool Level::loadObjects() {
 	entities.push_back(player);
 	characters.push_back(player);
 
-	// Load test enemy
-	Enemy* enemy = new Enemy(playerDefaultTexture, 500, 500, 40, 70, BASIC);
-	if (enemy == NULL) {
-		std::cout << "Error loading enemy" << std::endl;
-		return false;
-	}
+	// Load the shopt sound effect
+	Mix_Chunk* shootSound = Mix_LoadWAV((PATH + "shot.wav").c_str());
 
-	// Add animations
-	enemy->addAnimationTexture(playerDefaultTexture);
-	enemy->addAnimationTexture(playerWalkTexture1);
-	enemy->addAnimationTexture(playerDefaultTexture);
-	enemy->addAnimationTexture(playerWalkTexture2);
-
-	// Set the enemy's weapon
-	enemy->setWeapon(new Weapon(PISTOL, pistolTexture, bulletTexture));
-
-	this->enemy = enemy;
-
-	// Add enemy to containers
-	gameObjects.push_back(enemy);
-	entities.push_back(enemy);
-	characters.push_back(enemy);
 
 	return true;
 }
@@ -319,42 +339,31 @@ void Level::render() {
 		return;
 	}
 
-	// Render the level itself
+	// Render the level itself (excluding walls)
 	for (auto& tile : tiles) {
-		tile->render(&tileClips[tile->getTileType()]);
+		//tile->render(&tileClips[tile->getTileType()]);
+		if (!tile->isWall()) {
+			tile->render(&tileClips[tile->getTileType()]);
+		}
 	}
 
 	// Render GameObjects
 	for (auto& gameObject : gameObjects) {
 		gameObject->render();
 	}
+
+	// Render the level walls
+	for (auto& tile : tiles) {
+		if (tile->isWall()) {
+			tile->render(&tileClips[tile->getTileType()]);
+		}
+	}
 }
 
 void Level::update() {
 	// Update test enemy
-	if (enemy != NULL) {
-		// Convert player position to centre of tile
-		int targetPosX = player->getPosX() + player->getWidth() / 2;
-		int targetPosY = player->getPosY() + player->getHeight() / 2;
-
-		std::pair<int, int> nextPos = enemy->calculatePath(targetPosX, targetPosY, levelGrid);
-		enemy->moveTo(nextPos.first, nextPos.second);
-
-		// Make the enemy attack the player if they are in range
-
-		// Get the Bullet shot by the Enemy
-		if (levelTimer % 100 == 0) {
-			Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
-
-			// Add the bullet to the game containers
-			if (bullet != NULL) {
-				gameObjects.push_back(bullet);
-				entities.push_back(bullet);
-				bullets.push_back(bullet);
-			}
-		}
-	}
-
+	updateEnemies();
+	
 	// Update characters
 	updateCharacters();
 
@@ -368,6 +377,71 @@ void Level::update() {
 
 	// Update the level timer
 	levelTimer = SDL_GetTicks();
+}
+
+void Level::updateEnemies() {
+	// Update the test enemy
+	if (enemy != NULL) {
+		std::cout << "Enemy health: " << enemy->getHp() << "/100" << std::endl;
+		std::cout << "Enemy awareness: " << enemy->getAwareness() << std::endl;
+
+		// Convert player position to centre of tile
+		int targetPosX = player->getPosX() + player->getWidth() / 2;
+		int targetPosY = player->getPosY() + player->getHeight() / 2;
+
+		// Check enemy awareness level
+
+		// If the player is within 150 pixels of the enemy, set the enemy to alerted
+		if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) < 150.0) {
+			enemy->setAwareness(ALERTED);
+		}
+
+		// If the enemy is passive, it will move to a random point
+		if (enemy->getAwareness() == PASSIVE) {
+			if (enemy->getCurrentWaypoint() == std::make_pair(-1, -1)) {
+				enemy->setWaypoint(getWaypoint());
+			}
+			else if (levelTimer % 300 == 0) {
+				enemy->setWaypoint(getWaypoint());
+			}
+
+			enemy->moveToCurrentWaypoint(levelGrid);
+
+			return;
+		}
+		// If the enemy is alerted 
+		else {
+			// If the enemy is alerted and is further than 150 pixels from the player, it will move towards the player
+			// Check if enemy is further than 100 pixels from the player
+
+			if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) > 75.0) {
+				// Calculate the next position for the enemy to move to and move the enemy
+				std::pair<int, int> nextPos = enemy->calculatePath(targetPosX, targetPosY, levelGrid);
+				enemy->moveTo(nextPos.first, nextPos.second);
+			}
+			else {
+				// If the enemy is within 100 pixels of the player, it will stop moving
+				enemy->setVelX(0);
+				enemy->setVelY(0);
+			}
+			
+		}
+
+		// Make the enemy attack the player if they are in range
+
+		// Get the Bullet shot by the Enemy
+		if (levelTimer % 200 == 0) {
+			Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
+
+			// Add the bullet to the game containers
+			if (bullet != NULL) {
+				gameObjects.push_back(bullet);
+				entities.push_back(bullet);
+				bullets.push_back(bullet);
+			}
+		}
+	}
+
 }
 
 void Level::handleInput(SDL_Event& e) {
@@ -427,7 +501,7 @@ void Level::moveEntities() {
 				else if (entity->getVelX() > 0) {
 					entity->setPosX(tile->getPosX() - entity->getWidth());
 				}
-
+				
 				// If the entity is moving left (hits the right side of a wall) set its x position so that its left side is touching the right side of the wall
 				else if (entity->getVelX() < 0) {
 					entity->setPosX(tile->getPosX() + tile->getWidth());
@@ -541,6 +615,11 @@ void Level::updateCharacters() {
 				// If the bullet is colliding with the character, deal damage to the character
 				character->takeDamage(bullet->getDamage());
 
+				// If the character is an enemy, set its awareness to alerted
+				if (character == enemy) {
+					enemy->setAwareness(ALERTED);
+				}
+
 				// Remove the bullet from the game
 				// Set bullet to null in gameObjects vector
 				for (auto& gameObject : gameObjects) {
@@ -628,3 +707,21 @@ bool Level::isColliding(SDL_Rect a, SDL_Rect b) {
 	return true; 
 }
 
+double Level::calculateDistance(int x1, int y1, int x2, int y2) {
+	// Calculate the distance between two points using Pythagoras' theorem
+	return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+}
+
+std::pair<int, int> Level::getWaypoint() {
+	// Get a random waypoint for the enemy to move to
+	int x = rand() % LEVEL_WIDTH;
+	int y = rand() % LEVEL_HEIGHT;
+
+	// If the waypoint is within a wall, get a new waypoint
+	while (levelGrid[y / TILE_HEIGHT][x / TILE_WIDTH] == 1) {
+		x = rand() % LEVEL_WIDTH;
+		y = rand() % LEVEL_HEIGHT;
+	}
+
+	return { x, y };
+}

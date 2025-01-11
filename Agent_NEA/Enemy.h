@@ -31,8 +31,26 @@ class Enemy : public Character {
 		// Detects whether a point is within the enemy's cone of vision
 		bool colliderInVision(SDL_Rect collider);
 
+		// Sets the awareness level of the enemy
+		void setAwareness(int awareness);
+
 		// Renders the enemy and its vision cone
-		//void render() override;
+		void render() override;
+
+		// Returns the awareness level of the enemy
+		int getAwareness();
+
+		// Moves the enemy to a waypoint
+		void moveToCurrentWaypoint(int levelGrid[6][8]);
+
+		// Sets the waypoint
+		void setWaypoint(std::pair<int, int> waypoint);
+
+		// Returns the current waypoint
+		std::pair<int, int> getCurrentWaypoint();
+
+		// Sets the enemy's vision texture
+		void setVisionTexture(Texture* texture);
 	private:
 		// The distance at which the enemy can see the player
 		int visionRadius;
@@ -48,6 +66,12 @@ class Enemy : public Character {
 
 		// Gets adjacent grid positions
 		std::vector<GridPosition> getAdjacentPositions(GridPosition position, int levelGrid[6][8]);
+
+		// The current waypoint the enemy is moving towards
+		std::pair<int, int> currentWaypoint;
+
+		// The enemy's vision texture
+		Texture* visionTexture;
 
 
 };

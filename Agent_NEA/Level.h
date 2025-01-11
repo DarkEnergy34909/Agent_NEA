@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include "Tile.h"
 #include "Texture.h"
 #include "GameObject.h"
@@ -41,6 +42,9 @@ class Level {
 		// Updates the state of all characters
 		void updateCharacters();
 
+		// Updates behaviour of the enemy
+		void updateEnemies();
+
 		// Detects a collision between two rectangles
 		bool isColliding(SDL_Rect a, SDL_Rect b);
 
@@ -49,6 +53,12 @@ class Level {
 
 		// Closes the level
 		void close();
+
+		// Calculates the distance between two points
+		double calculateDistance(int x1, int y1, int x2, int y2);
+
+		// Gets a random waypoint for the enemy to move to
+		std::pair<int, int> getWaypoint();
 
 
 	private:
@@ -107,5 +117,8 @@ class Level {
 
 		// The level timer
 		int levelTimer;
+
+		// Shoot sound effect
+		Mix_Chunk* shootSound;
 
 };

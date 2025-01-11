@@ -154,7 +154,7 @@ Bullet* Character::shoot(int x, int y) {
 
 bool Character::isAlive() {
 	// Return whether the character is alive
-	return alive; 
+	return hp > 0;
 }
 
 int Character::getHp() {

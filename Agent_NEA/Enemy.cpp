@@ -8,11 +8,17 @@ Enemy::Enemy(Texture* texture, int posX, int posY, int width, int height, int en
 	this->enemyType = enemyType;
 	this->objectType = ENEMY;
 
+	// Initialise vision texture to null initially
+	visionTexture = NULL;
+
+	// Initialise the waypoint to a dummy value
+	currentWaypoint = { -1, -1 };
+
 	// Initialise the enemy's attributes based on its type
 	switch (enemyType) {
 		case BASIC:
 			// Set the enemy's vision radius
-			visionRadius = 100;
+			visionRadius = 150;
 
 			// Set the enemy's vision angle
 			visionAngle = 45;
@@ -193,4 +199,106 @@ std::vector<GridPosition> Enemy::getAdjacentPositions(GridPosition position, int
 
 	// Return the vector of adjacent positions
 	return adjacentPositions;
+}
+
+void Enemy::setAwareness(int awareness) {
+	this->awareness = awareness;
+
+	if (awareness == ALERTED) {
+		// Set colour of vision texture to red
+		visionTexture->setColor(255, 0, 0);
+	}
+	else if (awareness == PASSIVE) {
+		// Set colour of vision texture to white
+		visionTexture->setColor(255, 255, 255);
+	}
+}
+
+int Enemy::getAwareness() {
+	// Return enemy's awareness level
+	return awareness;
+}
+void Enemy::setWaypoint(std::pair<int, int> waypoint) {
+	// Sets the current waypoint
+	this->currentWaypoint = waypoint;
+}
+
+void Enemy::moveToCurrentWaypoint(int levelGrid[6][8]) {
+
+	std::pair<int, int> nextPos = calculatePath(currentWaypoint.first, currentWaypoint.second, levelGrid);
+
+	moveTo(nextPos.first, nextPos.second);
+}
+
+std::pair<int, int> Enemy::getCurrentWaypoint() {
+	// Returns the current waypoint
+	return currentWaypoint;
+}
+
+void Enemy::render() {
+	// First render the vision circle (under the character)
+	if (visionTexture != NULL) {
+		// Render the vision texture (to the centre of the enemy)
+		visionTexture->render(posX + (width / 2) - visionRadius, posY + (height / 2) - visionRadius);
+	}
+
+	// Copied from Character::render()
+	// If not moving , render the entity normally
+	if ((velX == 0 && velY == 0) || animationTextures.empty()) {
+		texture->render(posX, posY);
+
+		// Reset the animation
+		currentFrame = 0;
+	}
+	else {
+		// Render the Entity with the current animation texture
+		animationTextures[currentFrame]->render(posX, posY);
+
+		// Increment frame delay counter
+		frameDelayCounter++;
+
+		// If frame delay is reached, increment the current frame
+		if (frameDelayCounter == frameDelay) {
+			// Reset frame delay
+			frameDelayCounter = 0;
+
+			// Move onto the next texture
+			currentFrame++;
+		}
+
+		// If the end of the animation is reached, reset the animation
+		if (currentFrame == animationTextures.size()) {
+			currentFrame = 0;
+		}
+	}
+
+	// Render the weapon if the character has one
+	if (weapon != NULL) {
+		switch (weapon->getWeaponType()) {
+		case PISTOL:
+			// Check the angle of the weapon
+			// If the weapon is pointed to the right, render the gun to the right of the character
+			if (weapon->getAngle() > -90.0 && weapon->getAngle() < 90.0) {
+				weapon->render(posX + (3 * width / 4), posY + (height / 2));
+			}
+			// If the weapon is pointed to the left, render the gun to the left of the character
+			else {
+				weapon->render(posX + (width / 4) - weapon->getTexture()->getWidth(), posY + (height / 2));
+			}
+			break;
+		default:
+			// If the weapon type is invalid, print an error message
+			std::cout << "Invalid weapon type" << std::endl;
+			break;
+		}
+	}
+}
+
+void Enemy::setVisionTexture(Texture* texture) {
+	// Set the vision texture
+	this->visionTexture = texture;
+
+	// Set the width and height of the vision texture
+	visionTexture->setWidth(visionRadius * 2);
+	visionTexture->setHeight(visionRadius * 2);
 }
