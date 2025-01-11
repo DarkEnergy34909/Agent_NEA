@@ -341,7 +341,6 @@ void Level::render() {
 
 	// Render the level itself (excluding walls)
 	for (auto& tile : tiles) {
-		//tile->render(&tileClips[tile->getTileType()]);
 		if (!tile->isWall()) {
 			tile->render(&tileClips[tile->getTileType()]);
 		}
@@ -352,7 +351,7 @@ void Level::render() {
 		gameObject->render();
 	}
 
-	// Render the level walls
+	// Render the level walls on top of the level
 	for (auto& tile : tiles) {
 		if (tile->isWall()) {
 			tile->render(&tileClips[tile->getTileType()]);
@@ -379,7 +378,7 @@ void Level::update() {
 	levelTimer = SDL_GetTicks();
 }
 
-void Level::updateEnemies() {
+/*void Level::updateEnemies() {
 	// Update the test enemy
 	if (enemy != NULL) {
 		std::cout << "Enemy health: " << enemy->getHp() << "/100" << std::endl;
@@ -442,6 +441,68 @@ void Level::updateEnemies() {
 		}
 	}
 
+}*/
+
+void Level::updateEnemies() {
+	// Update the test enemy
+
+	if (enemy != NULL) {
+		// Get the player's centre position
+		int targetPosX = player->getPosX() + player->getWidth() / 2;
+		int targetPosY = player->getPosY() + player->getHeight() / 2;
+
+		// If the player is within the enemy's vision radius, set the enemy to alerted
+		if (enemy->canSee(player->getCollider())) {
+			enemy->setAwareness(ALERTED);
+		}
+
+		// If the enemy is passive, move to a random waypoint
+		if (enemy->getAwareness() == PASSIVE) {
+			// Set the enemy's initial waypoint if it is not set
+			if (enemy->getCurrentWaypoint() == std::make_pair(-1, -1)) {
+				enemy->setWaypoint(getWaypoint());
+			}
+
+			// Set a new waypoint every 300ms (or so)
+			else if (levelTimer % 300 == 0) {
+				enemy->setWaypoint(getWaypoint());
+			}
+
+			// Move the enemy to the current waypoint
+			enemy->moveToCurrentWaypoint(levelGrid);
+		}
+
+		// If the enemy is alerted, move towards the player and shoot at them
+		else if (enemy->getAwareness() == ALERTED) {
+
+			// If enemy is further than 75 pixels from the player, calculate a path and move towards the player
+			if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) > 75.0) {
+				std::pair<int, int> nextPos = enemy->calculatePath(targetPosX, targetPosY, levelGrid);
+				enemy->moveTo(nextPos.first, nextPos.second);
+			}
+			else {
+				// Stop moving if the enemy is within 75 pixels of the player
+				enemy->setVelX(0);
+				enemy->setVelY(0);
+			}
+
+			// Shoot at the player every 100ms
+			if (levelTimer % 100 == 0) {
+				Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
+
+				// Add the bullet to the game containers
+				if (bullet != NULL) {
+					gameObjects.push_back(bullet);
+					entities.push_back(bullet);
+					bullets.push_back(bullet);
+				}
+			}
+		}
+		else {
+			std::cout << "Invalid awareness level" << std::endl;
+		}
+
+	}
 }
 
 void Level::handleInput(SDL_Event& e) {
@@ -708,7 +769,7 @@ bool Level::isColliding(SDL_Rect a, SDL_Rect b) {
 }
 
 double Level::calculateDistance(int x1, int y1, int x2, int y2) {
-	// Calculate the distance between two points using Pythagoras' theorem
+	// Calculate the distance between two points using Pythagoras
 	return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 

@@ -206,11 +206,16 @@ void Enemy::setAwareness(int awareness) {
 
 	if (awareness == ALERTED) {
 		// Set colour of vision texture to red
-		visionTexture->setColor(255, 0, 0);
+		if (visionTexture != NULL) {
+			visionTexture->setColor(255, 0, 0);
+		}
 	}
 	else if (awareness == PASSIVE) {
 		// Set colour of vision texture to white
-		visionTexture->setColor(255, 255, 255);
+		if (visionTexture != NULL) {
+			visionTexture->setColor(255, 255, 255);
+		}
+		
 	}
 }
 
@@ -301,4 +306,26 @@ void Enemy::setVisionTexture(Texture* texture) {
 	// Set the width and height of the vision texture
 	visionTexture->setWidth(visionRadius * 2);
 	visionTexture->setHeight(visionRadius * 2);
+}
+
+int Enemy::getVisionRadius() {
+	// Return the vision radius
+	return visionRadius;
+}
+
+bool Enemy::canSee(SDL_Rect collider) {
+	// Check if the centre of the collider is within the vision circle
+
+	// Calculate the centre of the collider
+	int colliderCentreX = collider.x + (collider.w / 2);
+	int colliderCentreY = collider.y + (collider.h / 2);
+
+	// Calculate the centre of the vision circle
+	int visionCentreX = posX + (width / 2);
+	int visionCentreY = posY + (height / 2);
+
+	// Calculate the distance between the two centres using Pythagoras
+	int distance = sqrt(pow(visionCentreX - colliderCentreX, 2) + pow(visionCentreY - colliderCentreY, 2));
+
+	return distance < visionRadius;
 }
