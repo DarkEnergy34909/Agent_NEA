@@ -105,12 +105,13 @@ class Level {
 		std::vector<Character*> characters;
 		std::vector<Bullet*> bullets;
 		std::vector<Texture*> textures;
+		std::vector<Enemy*> enemies;
 
 		// The player character
 		Player* player; 
 
 		// A test enemy
-		Enemy* enemy;
+		//Enemy* enemy;
 
 		// Whether the level is paused
 		bool paused;

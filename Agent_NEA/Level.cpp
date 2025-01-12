@@ -30,9 +30,6 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set player to null initially
 	player = NULL;
 
-	// Set enemy to null initially
-	enemy = NULL;
-
 	// Initialise tiles to null initially
 	for (int i = 0; i < TOTAL_TILES; i++) {
 		tiles[i] = NULL;
@@ -139,14 +136,30 @@ bool Level::loadObjects() {
 		return false;
 	}
 
-	// Load vision texture
-	Texture* visionTexture = new Texture(renderer);
-	if (!visionTexture->loadFromFile(PATH + "vision_circle.png")) {
+	// Load vision textures
+	Texture* visionTexture1 = new Texture(renderer);
+	if (!visionTexture1->loadFromFile(PATH + "vision_circle.png")) {
 		std::cout << "Error loading vision texture" << std::endl;
 		return false;
 	}
 	// Vision radius must be transparent
-	visionTexture->setAlpha(96);
+	visionTexture1->setAlpha(96);
+
+	Texture* visionTexture2 = new Texture(renderer);
+	if (!visionTexture2->loadFromFile(PATH + "vision_circle.png")) {
+		std::cout << "Error loading vision texture" << std::endl;
+		return false;
+	}
+	// Vision radius must be transparent
+	visionTexture2->setAlpha(96);
+
+	Texture* visionTexture3 = new Texture(renderer);
+	if (!visionTexture3->loadFromFile(PATH + "vision_circle.png")) {
+		std::cout << "Error loading vision texture" << std::endl;
+		return false;
+	}
+	// Vision radius must be transparent
+	visionTexture3->setAlpha(96);
 
 	// Add textures to textures vector
 	textures.push_back(playerDefaultTexture);
@@ -154,33 +167,86 @@ bool Level::loadObjects() {
 	textures.push_back(playerWalkTexture2);
 	textures.push_back(pistolTexture);
 	textures.push_back(bulletTexture);
-	textures.push_back(visionTexture);
+	textures.push_back(visionTexture1);
+	textures.push_back(visionTexture2);
+	textures.push_back(visionTexture3);
 
 	// Load test enemy
-	Enemy* enemy = new Enemy(playerDefaultTexture, 500, 500, 40, 70, BASIC);
-	if (enemy == NULL) {
+	Enemy* enemy1 = new Enemy(playerDefaultTexture, 500, 500, 40, 70, BASIC);
+	if (enemy1 == NULL) {
 		std::cout << "Error loading enemy" << std::endl;
 		return false;
 	}
 
 	// Add animations
-	enemy->addAnimationTexture(playerDefaultTexture);
-	enemy->addAnimationTexture(playerWalkTexture1);
-	enemy->addAnimationTexture(playerDefaultTexture);
-	enemy->addAnimationTexture(playerWalkTexture2);
+	enemy1->addAnimationTexture(playerDefaultTexture);
+	enemy1->addAnimationTexture(playerWalkTexture1);
+	enemy1->addAnimationTexture(playerDefaultTexture);
+	enemy1->addAnimationTexture(playerWalkTexture2);
 
 	// Set the enemy's weapon
-	enemy->setWeapon(new Weapon(PISTOL, pistolTexture, bulletTexture));
+	enemy1->setWeapon(new Weapon(PISTOL, pistolTexture, bulletTexture));
 
 	// Add the enemy's vision texture
-	enemy->setVisionTexture(visionTexture);
+	enemy1->setVisionTexture(visionTexture1);
 
-	this->enemy = enemy;
+	//this->enemy = enemy;
 
 	// Add enemy to containers
-	gameObjects.push_back(enemy);
-	entities.push_back(enemy);
-	characters.push_back(enemy);
+	gameObjects.push_back(enemy1);
+	entities.push_back(enemy1);
+	characters.push_back(enemy1);
+	enemies.push_back(enemy1);
+
+	// Load another test enemy
+	Enemy* enemy2 = new Enemy(playerDefaultTexture, 400, 0, 40, 70, BASIC);
+	if (enemy2 == NULL) {
+		std::cout << "Error loading enemy" << std::endl;
+		return false;
+	}
+
+	// Add animations
+	enemy2->addAnimationTexture(playerDefaultTexture);
+	enemy2->addAnimationTexture(playerWalkTexture1);
+	enemy2->addAnimationTexture(playerDefaultTexture);
+	enemy2->addAnimationTexture(playerWalkTexture2);
+
+	// Set the enemy's weapon
+	enemy2->setWeapon(new Weapon(PISTOL, pistolTexture, bulletTexture));
+
+	// Add the enemy's vision texture
+	enemy2->setVisionTexture(visionTexture2);
+
+	// Add enemy to containers
+	gameObjects.push_back(enemy2);
+	entities.push_back(enemy2);
+	characters.push_back(enemy2);
+	enemies.push_back(enemy2);
+
+	// Load another test enemy
+	Enemy* enemy3 = new Enemy(playerDefaultTexture, 0, 400, 40, 70, BASIC);
+	if (enemy3 == NULL) {
+		std::cout << "Error loading enemy" << std::endl;
+		return false;
+	}
+
+	// Add animations
+	enemy3->addAnimationTexture(playerDefaultTexture);
+	enemy3->addAnimationTexture(playerWalkTexture1);
+	enemy3->addAnimationTexture(playerDefaultTexture);
+	enemy3->addAnimationTexture(playerWalkTexture2);
+
+	// Set the enemy's weapon
+	enemy3->setWeapon(new Weapon(PISTOL, pistolTexture, bulletTexture));
+
+	// Add the enemy's vision texture
+	enemy3->setVisionTexture(visionTexture3);
+
+	// Add enemy to containers
+	gameObjects.push_back(enemy3);
+	entities.push_back(enemy3);
+	characters.push_back(enemy3);
+	enemies.push_back(enemy3);
 
 	// Load the player
 	//Player* player = new Player(playerDefaultTexture, 0, 0, 50, 87);
@@ -378,131 +444,81 @@ void Level::update() {
 	levelTimer = SDL_GetTicks();
 }
 
-/*void Level::updateEnemies() {
-	// Update the test enemy
-	if (enemy != NULL) {
-		std::cout << "Enemy health: " << enemy->getHp() << "/100" << std::endl;
-		std::cout << "Enemy awareness: " << enemy->getAwareness() << std::endl;
-
-		// Convert player position to centre of tile
-		int targetPosX = player->getPosX() + player->getWidth() / 2;
-		int targetPosY = player->getPosY() + player->getHeight() / 2;
-
-		// Check enemy awareness level
-
-		// If the player is within 150 pixels of the enemy, set the enemy to alerted
-		if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) < 150.0) {
-			enemy->setAwareness(ALERTED);
-		}
-
-		// If the enemy is passive, it will move to a random point
-		if (enemy->getAwareness() == PASSIVE) {
-			if (enemy->getCurrentWaypoint() == std::make_pair(-1, -1)) {
-				enemy->setWaypoint(getWaypoint());
-			}
-			else if (levelTimer % 300 == 0) {
-				enemy->setWaypoint(getWaypoint());
-			}
-
-			enemy->moveToCurrentWaypoint(levelGrid);
-
-			return;
-		}
-		// If the enemy is alerted 
-		else {
-			// If the enemy is alerted and is further than 150 pixels from the player, it will move towards the player
-			// Check if enemy is further than 100 pixels from the player
-
-			if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) > 75.0) {
-				// Calculate the next position for the enemy to move to and move the enemy
-				std::pair<int, int> nextPos = enemy->calculatePath(targetPosX, targetPosY, levelGrid);
-				enemy->moveTo(nextPos.first, nextPos.second);
-			}
-			else {
-				// If the enemy is within 100 pixels of the player, it will stop moving
-				enemy->setVelX(0);
-				enemy->setVelY(0);
-			}
-			
-		}
-
-		// Make the enemy attack the player if they are in range
-
-		// Get the Bullet shot by the Enemy
-		if (levelTimer % 200 == 0) {
-			Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
-
-			// Add the bullet to the game containers
-			if (bullet != NULL) {
-				gameObjects.push_back(bullet);
-				entities.push_back(bullet);
-				bullets.push_back(bullet);
-			}
-		}
-	}
-
-}*/
-
 void Level::updateEnemies() {
-	// Update the test enemy
+	// Update each enemy in the game
+	if (enemies.empty()) {
+		return;
+	}
+	for (auto& enemy : enemies) {
+		if (enemy != NULL) {
+			// Get the player's centre position
+			int targetPosX = player->getPosX() + player->getWidth() / 2;
+			int targetPosY = player->getPosY() + player->getHeight() / 2;
 
-	if (enemy != NULL) {
-		// Get the player's centre position
-		int targetPosX = player->getPosX() + player->getWidth() / 2;
-		int targetPosY = player->getPosY() + player->getHeight() / 2;
-
-		// If the player is within the enemy's vision radius, set the enemy to alerted
-		if (enemy->canSee(player->getCollider())) {
-			enemy->setAwareness(ALERTED);
-		}
-
-		// If the enemy is passive, move to a random waypoint
-		if (enemy->getAwareness() == PASSIVE) {
-			// Set the enemy's initial waypoint if it is not set
-			if (enemy->getCurrentWaypoint() == std::make_pair(-1, -1)) {
-				enemy->setWaypoint(getWaypoint());
+			// If the player is within the enemy's vision radius, set the enemy to alerted
+			if (enemy->canSee(player->getCollider())) {
+				enemy->setAwareness(ALERTED);
 			}
 
-			// Set a new waypoint every 300ms (or so)
-			else if (levelTimer % 300 == 0) {
-				enemy->setWaypoint(getWaypoint());
+			// If the enemy is passive, move to a random waypoint
+			if (enemy->getAwareness() == PASSIVE) {
+				// Set the enemy's initial waypoint if it is not set
+				if (enemy->getCurrentWaypoint() == std::make_pair(-1, -1)) {
+					enemy->setWaypoint(getWaypoint());
+				}
+
+				// Set a new waypoint every 300ms (or so)
+				else if (levelTimer % 300 == 0) {
+					enemy->setWaypoint(getWaypoint());
+				}
+
+				// Move the enemy to the current waypoint
+				enemy->moveToCurrentWaypoint(levelGrid);
 			}
 
-			// Move the enemy to the current waypoint
-			enemy->moveToCurrentWaypoint(levelGrid);
-		}
+			// If the enemy is alerted, move towards the player and shoot at them
+			else if (enemy->getAwareness() == ALERTED) {
 
-		// If the enemy is alerted, move towards the player and shoot at them
-		else if (enemy->getAwareness() == ALERTED) {
-
-			// If enemy is further than 75 pixels from the player, calculate a path and move towards the player
-			if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) > 75.0) {
-				std::pair<int, int> nextPos = enemy->calculatePath(targetPosX, targetPosY, levelGrid);
-				enemy->moveTo(nextPos.first, nextPos.second);
-			}
-			else {
+				// If enemy is further than 75 pixels from the player, calculate a path and move towards the player
+				if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) > 75.0) {
+					std::pair<int, int> nextPos = enemy->calculatePath(targetPosX, targetPosY, levelGrid);
+					enemy->moveTo(nextPos.first, nextPos.second);
+				}
 				// Stop moving if the enemy is within 75 pixels of the player
-				enemy->setVelX(0);
-				enemy->setVelY(0);
-			}
+				else {
+					enemy->setVelX(0);
+					enemy->setVelY(0);
+				}
 
-			// Shoot at the player every 100ms
-			if (levelTimer % 100 == 0) {
-				Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
+				// Iterate over all other enemies
+				for (auto& otherEnemy : enemies) {
+					if (otherEnemy != NULL) {
 
-				// Add the bullet to the game containers
-				if (bullet != NULL) {
-					gameObjects.push_back(bullet);
-					entities.push_back(bullet);
-					bullets.push_back(bullet);
+						// If the enemy is not the same as the current enemy and the enemy is within the vision radius of the current enemy, alert the enemy
+						if (otherEnemy != enemy && enemy->canSee(otherEnemy->getCollider())) {
+							otherEnemy->setAwareness(ALERTED);
+						}
+					}
+				}
+
+				// Shoot at the player every 100ms
+				if (levelTimer % 100 == 0) {
+					Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
+
+					// Add the bullet to the game containers
+					if (bullet != NULL) {
+						gameObjects.push_back(bullet);
+						entities.push_back(bullet);
+						bullets.push_back(bullet);
+					}
 				}
 			}
+			else {
+				std::cout << "Invalid awareness level" << std::endl;
+			}
 		}
-		else {
-			std::cout << "Invalid awareness level" << std::endl;
-		}
-
 	}
+	
 }
 
 void Level::handleInput(SDL_Event& e) {
@@ -677,8 +693,10 @@ void Level::updateCharacters() {
 				character->takeDamage(bullet->getDamage());
 
 				// If the character is an enemy, set its awareness to alerted
-				if (character == enemy) {
-					enemy->setAwareness(ALERTED);
+				for (auto& enemy: enemies) {
+					if (enemy == character) {
+						enemy->setAwareness(ALERTED);
+					}
 				}
 
 				// Remove the bullet from the game
@@ -722,9 +740,11 @@ void Level::updateCharacters() {
 				}
 			}
 
-			// If the character the enemy, set enemy to null
-			if (character == enemy) {
-				enemy = NULL;
+			// If the character is an enemy, set enemy to null
+			for (auto& enemy: enemies) {
+				if (enemy == character) {
+					enemy = NULL;
+				}
 			}
 
 			// Delete the character
