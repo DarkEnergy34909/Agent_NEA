@@ -60,6 +60,8 @@ class Level {
 		// Gets a random waypoint for the enemy to move to
 		std::pair<int, int> getWaypoint();
 
+		void renderLighting();
+
 
 	private:
 		// File path
@@ -127,5 +129,7 @@ class Level {
 
 		// Whether the game is running
 		bool running;
+
+		Texture* lightingOverlay;
 
 };

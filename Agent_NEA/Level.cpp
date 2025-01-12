@@ -33,6 +33,10 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set item to null initially
 	item = NULL;
 
+	// Set lighting overlay to null initially
+	lightingOverlay = NULL;
+
+
 	// Initialise tiles to null initially
 	for (int i = 0; i < TOTAL_TILES; i++) {
 		tiles[i] = NULL;
@@ -177,6 +181,17 @@ bool Level::loadObjects() {
 	// Vision radius must be transparent
 	visionTexture3->setAlpha(96);
 
+	// Load lighting overlay texture
+	lightingOverlay = new Texture(renderer);
+	if (!lightingOverlay->loadFromFile(PATH + "dark.png")) {
+		std::cout << "Error loading lighting overlay texture" << std::endl;
+		return false;
+	}
+	lightingOverlay->setAlpha(128);
+	lightingOverlay->setWidth(SCREEN_WIDTH);
+	lightingOverlay->setHeight(SCREEN_HEIGHT);
+	lightingOverlay->setBlendMode(SDL_BLENDMODE_BLEND);
+
 	// Add textures to textures vector
 	textures.push_back(playerDefaultTexture);
 	textures.push_back(playerWalkTexture1);
@@ -187,6 +202,8 @@ bool Level::loadObjects() {
 	textures.push_back(visionTexture2);
 	textures.push_back(visionTexture3);
 	textures.push_back(itemTexture);
+	textures.push_back(lightingOverlay);
+
 
 	// Load the item
 	GameObject* cash = new GameObject(itemTexture, 600, 440, 25, 15);
@@ -865,4 +882,7 @@ std::pair<int, int> Level::getWaypoint() {
 	}
 
 	return { x, y };
+}
+void Level::renderLighting() {
+
 }
