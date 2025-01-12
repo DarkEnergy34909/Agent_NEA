@@ -122,7 +122,6 @@ double Weapon::getAngle() {
 	// Return the angle of the weapon
 	return angle;
 }
-
 Texture* Weapon::getTexture() {
 	// Return the weapon texture
 	return texture;

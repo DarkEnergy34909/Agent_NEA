@@ -110,6 +110,9 @@ class Level {
 		// The player character
 		Player* player; 
 
+		// The item the player has to collect
+		GameObject* item;
+
 		// A test enemy
 		//Enemy* enemy;
 
@@ -121,5 +124,8 @@ class Level {
 
 		// Shoot sound effect
 		Mix_Chunk* shootSound;
+
+		// Whether the game is running
+		bool running;
 
 };
