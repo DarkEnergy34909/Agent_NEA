@@ -30,6 +30,13 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set player to null initially
 	player = NULL;
 
+	// Set item to null initially
+	item = NULL;
+
+	// Set lighting overlay to null initially
+	lightingOverlay = NULL;
+
+
 	// Initialise tiles to null initially
 	for (int i = 0; i < TOTAL_TILES; i++) {
 		tiles[i] = NULL;
@@ -51,6 +58,9 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Level is not paused initially
 	paused = false;
+
+	// Level is running initially
+	running = true;
 
 	// Set level timer to 0
 	levelTimer = 0;
@@ -96,6 +106,9 @@ void Level::close() {
 	entities.clear();
 	characters.clear();
 	textures.clear();
+
+	// Delete the shoot sound
+	Mix_FreeChunk(shootSound);
 }
 
 bool Level::loadObjects() {
@@ -136,6 +149,13 @@ bool Level::loadObjects() {
 		return false;
 	}
 
+	// Load item texture
+	Texture* itemTexture = new Texture(renderer);
+	if (!itemTexture->loadFromFile(PATH + "cash.png")) {
+		std::cout << "Error loading item texture" << std::endl;
+		return false;
+	}
+
 	// Load vision textures
 	Texture* visionTexture1 = new Texture(renderer);
 	if (!visionTexture1->loadFromFile(PATH + "vision_circle.png")) {
@@ -161,6 +181,17 @@ bool Level::loadObjects() {
 	// Vision radius must be transparent
 	visionTexture3->setAlpha(96);
 
+	// Load lighting overlay texture
+	lightingOverlay = new Texture(renderer);
+	if (!lightingOverlay->loadFromFile(PATH + "dark.png")) {
+		std::cout << "Error loading lighting overlay texture" << std::endl;
+		return false;
+	}
+	lightingOverlay->setAlpha(128);
+	lightingOverlay->setWidth(SCREEN_WIDTH);
+	lightingOverlay->setHeight(SCREEN_HEIGHT);
+	lightingOverlay->setBlendMode(SDL_BLENDMODE_BLEND);
+
 	// Add textures to textures vector
 	textures.push_back(playerDefaultTexture);
 	textures.push_back(playerWalkTexture1);
@@ -170,6 +201,22 @@ bool Level::loadObjects() {
 	textures.push_back(visionTexture1);
 	textures.push_back(visionTexture2);
 	textures.push_back(visionTexture3);
+	textures.push_back(itemTexture);
+	textures.push_back(lightingOverlay);
+
+
+	// Load the item
+	GameObject* cash = new GameObject(itemTexture, 600, 440, 25, 15);
+	if (cash == NULL) {
+		std::cout << "Error loading item" << std::endl;
+		return false;
+	}
+
+	// Set the item
+	this->item = cash;
+
+	// Add item to containers
+	gameObjects.push_back(cash);
 
 	// Load test enemy
 	Enemy* enemy1 = new Enemy(playerDefaultTexture, 500, 500, 40, 70, BASIC);
@@ -273,8 +320,12 @@ bool Level::loadObjects() {
 	entities.push_back(player);
 	characters.push_back(player);
 
-	// Load the shopt sound effect
-	Mix_Chunk* shootSound = Mix_LoadWAV((PATH + "shot.wav").c_str());
+	// Load the shot sound effect
+	shootSound = Mix_LoadWAV((PATH + "shot3.wav").c_str());
+	if (shootSound == NULL) {
+		std::cout << "Error loading shoot sound" << std::endl;
+		return false;
+	}
 
 
 	return true;
@@ -426,22 +477,26 @@ void Level::render() {
 }
 
 void Level::update() {
-	// Update test enemy
-	updateEnemies();
-	
-	// Update characters
-	updateCharacters();
+	if (running) {
+		// Update test enemy
+		updateEnemies();
 
-	std::cout << "Player health: " << player->getHp() << "/100" << std::endl;
+		// Update characters
+		updateCharacters();
 
-	// Move all entities
-	moveEntities();
+		std::cout << "Player health: " << player->getHp() << "/100" << std::endl;
 
-	// Render the level
-	render();
+		// Move all entities
+		moveEntities();
 
-	// Update the level timer
-	levelTimer = SDL_GetTicks();
+		// Render the level
+		render();
+
+		// Update the level timer
+		levelTimer = SDL_GetTicks();
+	}
+
+
 }
 
 void Level::updateEnemies() {
@@ -502,8 +557,11 @@ void Level::updateEnemies() {
 				}
 
 				// Shoot at the player every 100ms
-				if (levelTimer % 100 == 0) {
+				if (levelTimer % 75 == 0) {
 					Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
+
+					// Play the shoot sound effect
+					Mix_PlayChannel(-1, shootSound, 0);
 
 					// Add the bullet to the game containers
 					if (bullet != NULL) {
@@ -532,6 +590,9 @@ void Level::handleInput(SDL_Event& e) {
 		if (e.button.button == SDL_BUTTON_LEFT) {
 			// Get the bullet fired by the player
 			Bullet* bullet = player->shoot();
+
+			// Play the shoot sound effect
+			Mix_PlayChannel(-1, shootSound, 0);
 
 			// If the bullet is not null, add it to game containers
 			if (bullet != NULL) {
@@ -674,6 +735,22 @@ void Level::moveEntities() {
 		}
 	}
 
+
+	// Check if the player has collected the item
+	if (item != NULL && isColliding(player->getCollider(), item->getCollider())) {
+		std::cout << "Item collected" << std::endl;
+
+		// Set the item to null in gameObjects vector
+		for (auto& gameObject : gameObjects) {
+			if (gameObject == item) {
+				gameObject = NULL;
+			}
+		}
+
+		delete item;
+		item = NULL;
+	}
+
 	// Remove all deleted entities from game containers
 	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), nullptr), gameObjects.end());
 	entities.erase(std::remove(entities.begin(), entities.end(), nullptr), entities.end());
@@ -805,4 +882,7 @@ std::pair<int, int> Level::getWaypoint() {
 	}
 
 	return { x, y };
+}
+void Level::renderLighting() {
+
 }

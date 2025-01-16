@@ -60,6 +60,8 @@ class Level {
 		// Gets a random waypoint for the enemy to move to
 		std::pair<int, int> getWaypoint();
 
+		void renderLighting();
+
 
 	private:
 		// File path
@@ -110,6 +112,9 @@ class Level {
 		// The player character
 		Player* player; 
 
+		// The item the player has to collect
+		GameObject* item;
+
 		// A test enemy
 		//Enemy* enemy;
 
@@ -121,5 +126,10 @@ class Level {
 
 		// Shoot sound effect
 		Mix_Chunk* shootSound;
+
+		// Whether the game is running
+		bool running;
+
+		Texture* lightingOverlay;
 
 };
