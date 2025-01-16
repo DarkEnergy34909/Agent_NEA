@@ -63,7 +63,7 @@ class Level {
 
 	private:
 		// File path
-		const std::string PATH = "C:/Users/Sebastian Kember/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
+		const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
 
 		// The window the level is rendered to
 		SDL_Window* window;
