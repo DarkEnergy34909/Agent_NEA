@@ -27,6 +27,9 @@ class Level {
 		// Loads the level
 		bool loadLevel();
 
+		// Loads text and font
+		bool loadText();
+
 		// Spawns all characters
 		void spawnCharacters();
 
@@ -60,7 +63,17 @@ class Level {
 		// Gets a random waypoint for the enemy to move to
 		std::pair<int, int> getWaypoint();
 
-		void renderLighting();
+		// Changes a GameObject's position to a random position, making sure it is not in a wall
+		void spawnObject(GameObject* object);
+
+		// Update the user's score
+		void updateScore(int scoreDifference);
+
+		// Spawn a new enemy at a random position
+		void spawnEnemy();
+
+		// Checks if the game is running
+		bool isRunning();
 
 
 	private:
@@ -72,6 +85,18 @@ class Level {
 
 		// The renderer used to render the level
 		SDL_Renderer* renderer;
+
+		// The score texture
+		Texture* scoreTexture;
+
+		// The score message texture
+		Texture* scoreMessageTexture;
+
+		// The player's health texture
+		Texture* healthTexture;
+
+		// The text font
+		TTF_Font* font;
 
 		// Level constants
 		const int LEVEL_WIDTH = 640;
@@ -124,12 +149,17 @@ class Level {
 		// The level timer
 		int levelTimer;
 
+		// The frame counter
+		int frameCounter;
+
 		// Shoot sound effect
 		Mix_Chunk* shootSound;
 
 		// Whether the game is running
 		bool running;
 
-		Texture* lightingOverlay;
+		// The user's current score
+		int score;
 
 };
+

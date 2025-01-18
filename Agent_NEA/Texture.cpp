@@ -52,6 +52,38 @@ bool Texture::loadFromFile(std::string filePath) {
 	return (texture != NULL);
 }
 
+bool Texture::loadFromText(std::string text, TTF_Font* font, SDL_Color color) {
+	// Free the previous texture
+	free();
+
+	// Render the text to a surface
+	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, 0);
+
+	if (textSurface == NULL) {
+		std::cout << "Error rendering text surface: " << TTF_GetError() << std::endl;
+
+		return false;
+	}
+	else {
+		// Create a texture from the surface
+		texture = SDL_CreateTextureFromSurface(renderer, textSurface);
+		if (texture == NULL) {
+			std::cout << "Error creating texture from surface: " << SDL_GetError() << std::endl;
+
+		}
+		else {
+			// Set the dimensions of the texture
+			width = textSurface->w;
+			height = textSurface->h;
+		}
+		// Free the surface
+		SDL_FreeSurface(textSurface);
+	}
+
+	// Return true if the texture was successfully loaded, false if not
+	return (texture != NULL);
+}
+
 void Texture::free() {
 	// Destroy the texture
 	if (texture != NULL) {

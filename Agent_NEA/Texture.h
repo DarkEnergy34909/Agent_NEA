@@ -16,6 +16,9 @@ class Texture {
 		// Loads the texture from a png file
 		bool loadFromFile(std::string filePath);
 
+		// Loads the texture from a text string and font
+		bool loadFromText(std::string text, TTF_Font* font, SDL_Color color);
+
 		// Deletes the texture
 		void free();
 

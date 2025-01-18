@@ -63,7 +63,7 @@ void Player::handleInput(SDL_Event& e) {
 
 	// If the mouse is moved adjust the angle of the weapon
 	else if (e.type == SDL_MOUSEMOTION) {
-		std::cout << "Mouse moved" << std::endl;
+		
 		// Get the position of the cursor
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);

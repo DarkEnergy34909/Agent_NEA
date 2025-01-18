@@ -22,6 +22,14 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set renderer
 	this->renderer = renderer;
 
+	// Set text textures to null initially
+	scoreTexture = NULL;
+	scoreMessageTexture = NULL;
+	healthTexture = NULL;
+
+	// Set font to null initially
+	font = NULL;
+
 	// Initialise containers
 	gameObjects = std::vector<GameObject*>();
 	entities = std::vector<Entity*>();
@@ -32,10 +40,6 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Set item to null initially
 	item = NULL;
-
-	// Set lighting overlay to null initially
-	lightingOverlay = NULL;
-
 
 	// Initialise tiles to null initially
 	for (int i = 0; i < TOTAL_TILES; i++) {
@@ -64,6 +68,12 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Set level timer to 0
 	levelTimer = 0;
+
+	// Set frame counter to 0
+	frameCounter = 0;
+
+	// Set score to 0
+	score = 0;
 
 	// Set shoot sound to null initially
 	shootSound = NULL;
@@ -181,17 +191,6 @@ bool Level::loadObjects() {
 	// Vision radius must be transparent
 	visionTexture3->setAlpha(96);
 
-	// Load lighting overlay texture
-	lightingOverlay = new Texture(renderer);
-	if (!lightingOverlay->loadFromFile(PATH + "dark.png")) {
-		std::cout << "Error loading lighting overlay texture" << std::endl;
-		return false;
-	}
-	lightingOverlay->setAlpha(128);
-	lightingOverlay->setWidth(SCREEN_WIDTH);
-	lightingOverlay->setHeight(SCREEN_HEIGHT);
-	lightingOverlay->setBlendMode(SDL_BLENDMODE_BLEND);
-
 	// Add textures to textures vector
 	textures.push_back(playerDefaultTexture);
 	textures.push_back(playerWalkTexture1);
@@ -202,7 +201,6 @@ bool Level::loadObjects() {
 	textures.push_back(visionTexture2);
 	textures.push_back(visionTexture3);
 	textures.push_back(itemTexture);
-	textures.push_back(lightingOverlay);
 
 
 	// Load the item
@@ -331,6 +329,52 @@ bool Level::loadObjects() {
 	return true;
 }
 
+bool Level::loadText() {
+	// Load the font
+	font = TTF_OpenFont((PATH + "OpenSans-Regular.ttf").c_str(), 28);
+
+	// If the font is null, print an error message and return false
+	if (font == NULL) {
+		std::cout << "Error loading font: " << TTF_GetError() << std::endl;
+		return false;
+	}
+
+	// Load the score texture
+	scoreTexture = new Texture(renderer);
+	if (!scoreTexture->loadFromText("Score: 0", font, { 255, 255, 255 })) {
+		std::cout << "Error loading score texture" << std::endl;
+		return false;
+	}
+	//scoreTexture->setWidth(200);
+	//scoreTexture->setHeight(50);
+
+	// Load the score message texture
+	scoreMessageTexture = new Texture(renderer);
+	if (!scoreMessageTexture->loadFromText("b", font, { 255, 255, 255 })) {
+		std::cout << "Error loading score message texture" << std::endl;
+		return false;
+	}
+	//scoreMessageTexture->setWidth(200);
+	//scoreMessageTexture->setHeight(50);
+
+	// Load the health texture
+	healthTexture = new Texture(renderer);
+	if (!healthTexture->loadFromText("Health: 100", font, { 255, 255, 255 })) {
+		std::cout << "Error loading health texture" << std::endl;
+		return false;
+	}
+	//healthTexture->setWidth(200);
+	//healthTexture->setHeight(50);
+
+	// Add textures to textures vector
+	textures.push_back(scoreTexture);
+	textures.push_back(scoreMessageTexture);
+	textures.push_back(healthTexture);
+
+	return true;
+
+}
+
 bool Level::loadLevel() {
 	// The level will eventually be loaded from a file, but for now it is hardcoded
 	int storedLevel[6][8] = {
@@ -452,7 +496,7 @@ bool Level::loadLevel() {
 
 void Level::render() {
 	if (renderer == NULL) {
-		std::cout << "Error rendering222: " << SDL_GetError() << std::endl;
+		std::cout << "Error rendering: " << SDL_GetError() << std::endl;
 		return;
 	}
 
@@ -474,17 +518,28 @@ void Level::render() {
 			tile->render(&tileClips[tile->getTileType()]);
 		}
 	}
+
+	// Render score
+	scoreTexture->loadFromText("Score: " + std::to_string(score), font, { 255, 255, 255 });
+	scoreTexture->render(SCREEN_WIDTH - scoreTexture->getWidth() - 10, 10);
+
+	// Render score message
+	scoreMessageTexture->render(SCREEN_WIDTH - scoreMessageTexture->getWidth() - 10, 50);
+
+	// Render health
+	healthTexture->loadFromText("Health: " + std::to_string(player->getHp()), font, { 255, 255, 255 });
+	healthTexture->render(10, 10);
 }
 
 void Level::update() {
-	if (running) {
+	if (!paused) {
 		// Update test enemy
 		updateEnemies();
 
 		// Update characters
 		updateCharacters();
 
-		std::cout << "Player health: " << player->getHp() << "/100" << std::endl;
+		//std::cout << "Player health: " << player->getHp() << "/100" << std::endl;
 
 		// Move all entities
 		moveEntities();
@@ -494,8 +549,28 @@ void Level::update() {
 
 		// Update the level timer
 		levelTimer = SDL_GetTicks();
+
+		// Update the frame counter
+		frameCounter++;
+
+		if (frameCounter % 100 == 0) {
+			// Increase score by 10
+			updateScore(1);
+		}
+	}
+}
+
+void Level::updateScore(int scoreDifference) {
+	// Update the score
+	score += scoreDifference;
+
+	// If the score is less than 0, set it to 0
+	if (score < 0) {
+		score = 0;
 	}
 
+	// Print the score
+	std::cout << "Score: " << score << std::endl;
 
 }
 
@@ -504,7 +579,12 @@ void Level::updateEnemies() {
 	if (enemies.empty()) {
 		return;
 	}
+
+	// Flag to check if all enemies are passive
+	bool allPassive = true;
+
 	for (auto& enemy : enemies) {
+
 		if (enemy != NULL) {
 			// Get the player's centre position
 			int targetPosX = player->getPosX() + player->getWidth() / 2;
@@ -513,6 +593,13 @@ void Level::updateEnemies() {
 			// If the player is within the enemy's vision radius, set the enemy to alerted
 			if (enemy->canSee(player->getCollider())) {
 				enemy->setAwareness(ALERTED);
+
+				// Decrease the player's score by 2 every 100 frames
+				if (frameCounter % 100 == 0) {
+					std::cout << "Player spotted by enemy" << std::endl;
+
+					updateScore(-5);
+				}
 			}
 
 			// If the enemy is passive, move to a random waypoint
@@ -533,6 +620,8 @@ void Level::updateEnemies() {
 
 			// If the enemy is alerted, move towards the player and shoot at them
 			else if (enemy->getAwareness() == ALERTED) {
+				// Set allPassive to false
+				allPassive = false;
 
 				// If enemy is further than 75 pixels from the player, calculate a path and move towards the player
 				if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) > 75.0) {
@@ -550,14 +639,19 @@ void Level::updateEnemies() {
 					if (otherEnemy != NULL) {
 
 						// If the enemy is not the same as the current enemy and the enemy is within the vision radius of the current enemy, alert the enemy
-						if (otherEnemy != enemy && enemy->canSee(otherEnemy->getCollider())) {
+						if (otherEnemy != enemy && enemy->canSee(otherEnemy->getCollider()) && otherEnemy->getAwareness() != ALERTED) {
 							otherEnemy->setAwareness(ALERTED);
+
+							std::cout << "Enemy alerted by another enemy" << std::endl;
+
+							// If an enemy alerts another enemy, reduce the player's score by 10
+							updateScore(-10);
 						}
 					}
 				}
 
 				// Shoot at the player every 100ms
-				if (levelTimer % 75 == 0) {
+				if (levelTimer % 25 == 0) {
 					Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
 
 					// Play the shoot sound effect
@@ -575,6 +669,18 @@ void Level::updateEnemies() {
 				std::cout << "Invalid awareness level" << std::endl;
 			}
 		}
+	}
+
+	// Every 2000 frames, if all enemies are passive, increase score by 30
+	if (frameCounter % 2000 == 0 && allPassive) {
+		std::cout << "Stealth bonus: " << std::endl;
+
+		updateScore(30);
+	}
+
+	// Every 2000 frames, add a new enemy
+	if (frameCounter % 2000 == 0) {
+		spawnEnemy();
 	}
 	
 }
@@ -625,7 +731,6 @@ void Level::moveEntities() {
 		// Collision detection
 		for (auto& tile : tiles) {
 			if (isColliding(entity->getCollider(), tile->getTileCollider()) && tile->isWall()) {
-				std::cout << "Collision detected" << std::endl;
 
 				// Resolve collisions
 
@@ -675,7 +780,6 @@ void Level::moveEntities() {
 			// Collision detection in the y direction
 			for (auto& tile : tiles) {
 				if (isColliding(entity->getCollider(), tile->getTileCollider()) && tile->isWall()) {
-					std::cout << "Collision detected" << std::endl;
 
 					// Resolve collisions
 
@@ -740,15 +844,13 @@ void Level::moveEntities() {
 	if (item != NULL && isColliding(player->getCollider(), item->getCollider())) {
 		std::cout << "Item collected" << std::endl;
 
-		// Set the item to null in gameObjects vector
-		for (auto& gameObject : gameObjects) {
-			if (gameObject == item) {
-				gameObject = NULL;
-			}
-		}
+		// Increase score by 100
+		score += 100;
 
-		delete item;
-		item = NULL;
+		// Spawn the item elsewhere
+		spawnObject(item);
+
+		
 	}
 
 	// Remove all deleted entities from game containers
@@ -773,6 +875,11 @@ void Level::updateCharacters() {
 				for (auto& enemy: enemies) {
 					if (enemy == character) {
 						enemy->setAwareness(ALERTED);
+
+						std::cout << "Enemy alerted" << std::endl;
+
+						// Reduce the player's score by 5 when the player alerts an enemy by shooting it
+						updateScore(-5);
 					}
 				}
 
@@ -821,7 +928,17 @@ void Level::updateCharacters() {
 			for (auto& enemy: enemies) {
 				if (enemy == character) {
 					enemy = NULL;
+
+					std::cout << "Enemy killed" << std::endl;
+
+					// Increase the player's score by 20 when they kill an enemy
+					updateScore(20);
 				}
+			}
+
+			if (character == player) {
+				// If the player is dead, end the game
+				running = false;
 			}
 
 			// Delete the character
@@ -883,6 +1000,72 @@ std::pair<int, int> Level::getWaypoint() {
 
 	return { x, y };
 }
-void Level::renderLighting() {
 
+void Level::spawnObject(GameObject* object) {
+	std::pair<int, int> randomPos = getWaypoint();
+
+	object->setPosX(randomPos.first);
+	object->setPosY(randomPos.second);
+
+	for (auto& tile : tiles) {
+		if (isColliding(object->getCollider(), tile->getTileCollider()) && tile->isWall()) {
+			spawnObject(object);
+		}
+	}
+
+}
+
+void Level::spawnEnemy() {
+	// Create a new enemy
+	Enemy* enemy = new Enemy(textures[0], 0, 0, 40, 70, BASIC);
+	if (enemy == NULL) {
+		std::cout << "Error loading enemy" << std::endl;
+		return;
+	}
+
+	// Add animations
+	enemy->addAnimationTexture(textures[0]);
+	enemy->addAnimationTexture(textures[1]);
+	enemy->addAnimationTexture(textures[0]);
+	enemy->addAnimationTexture(textures[2]);
+
+	// Add the enemy's weapon
+	enemy->setWeapon(new Weapon(PISTOL, textures[3], textures[4]));
+
+	// Add the enemy's vision texture
+	Texture* visionTexture = new Texture(renderer);
+	if (!visionTexture->loadFromFile(PATH + "vision_circle.png")) {
+		std::cout << "Error loading vision texture" << std::endl;
+		return;
+	}
+	// Vision radius must be transparent
+	visionTexture->setAlpha(96);
+	enemy->setVisionTexture(visionTexture);
+
+	// Add vision texture to textures vector
+	textures.push_back(visionTexture);
+
+	// Set the enemy's position
+	std::pair<int, int> randomPos = getWaypoint();
+
+	enemy->setPosX(randomPos.first);
+	enemy->setPosY(randomPos.second);
+
+	while (enemy->canSee(player->getCollider())) {
+		randomPos = getWaypoint();
+		enemy->setPosX(randomPos.first);
+		enemy->setPosY(randomPos.second);
+	}
+
+	// Add the enemy to the game
+	gameObjects.push_back(enemy);
+	entities.push_back(enemy);
+	characters.push_back(enemy);
+	enemies.push_back(enemy);
+
+
+}
+
+bool Level::isRunning() {
+	return running;
 }

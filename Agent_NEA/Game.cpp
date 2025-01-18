@@ -84,6 +84,12 @@ bool Game::loadMedia() {
 		return false;
 	}
 
+	// Load text
+	if (!level->loadText()) {
+		std::cout << "Error loading text" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
@@ -138,6 +144,11 @@ void Game::mainLoop() {
 
 		// Render everything to the screen
 		SDL_RenderPresent(renderer);
+
+		// If the level is not running, quit the gamedd
+		if (!level->isRunning()) {
+			quit = true;
+		}
 
 	}
 }
