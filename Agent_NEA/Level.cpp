@@ -507,6 +507,13 @@ void Level::render() {
 		}
 	}
 
+	// Render vision circles under game objects
+	for (auto& enemy : enemies) {
+		if (enemy != NULL) {
+			enemy->renderVision();
+		}
+	}
+
 	// Render GameObjects
 	for (auto& gameObject : gameObjects) {
 		gameObject->render();
@@ -651,7 +658,7 @@ void Level::updateEnemies() {
 				}
 
 				// Shoot at the player every 100ms
-				if (levelTimer % 25 == 0) {
+				if (levelTimer % 75 == 0) {
 					Bullet* bullet = enemy->shoot(targetPosX, targetPosY);
 
 					// Play the shoot sound effect
@@ -679,7 +686,7 @@ void Level::updateEnemies() {
 	}
 
 	// Every 2000 frames, add a new enemy
-	if (frameCounter % 2000 == 0) {
+	if (frameCounter % 1500 == 0) {
 		spawnEnemy();
 	}
 	

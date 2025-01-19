@@ -37,6 +37,9 @@ class Enemy : public Character {
 		// Renders the enemy and its vision cone
 		void render() override;
 
+		// Renders the enemy's vision cone
+		void renderVision();
+
 		// Returns the awareness level of the enemy
 		int getAwareness();
 

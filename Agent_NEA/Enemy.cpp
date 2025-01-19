@@ -242,10 +242,10 @@ std::pair<int, int> Enemy::getCurrentWaypoint() {
 
 void Enemy::render() {
 	// First render the vision circle (under the character)
-	if (visionTexture != NULL) {
+	/*if (visionTexture != NULL) {
 		// Render the vision texture (to the centre of the enemy)
 		visionTexture->render(posX + (width / 2) - visionRadius, posY + (height / 2) - visionRadius);
-	}
+	}*/
 
 	// Copied from Character::render()
 	// If not moving , render the entity normally
@@ -296,6 +296,13 @@ void Enemy::render() {
 			std::cout << "Invalid weapon type" << std::endl;
 			break;
 		}
+	}
+}
+
+void Enemy::renderVision() {
+	// Render the vision texture (to the centre of the enemy)
+	if (visionTexture != NULL) {
+		visionTexture->render(posX + (width / 2) - visionRadius, posY + (height / 2) - visionRadius);
 	}
 }
 
