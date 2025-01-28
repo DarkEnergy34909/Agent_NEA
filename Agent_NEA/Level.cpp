@@ -24,7 +24,6 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Set text textures to null initially
 	scoreTexture = NULL;
-	scoreMessageTexture = NULL;
 	healthTexture = NULL;
 
 	// Set font to null initially
@@ -345,17 +344,6 @@ bool Level::loadText() {
 		std::cout << "Error loading score texture" << std::endl;
 		return false;
 	}
-	//scoreTexture->setWidth(200);
-	//scoreTexture->setHeight(50);
-
-	// Load the score message texture
-	scoreMessageTexture = new Texture(renderer);
-	if (!scoreMessageTexture->loadFromText("b", font, { 255, 255, 255 })) {
-		std::cout << "Error loading score message texture" << std::endl;
-		return false;
-	}
-	//scoreMessageTexture->setWidth(200);
-	//scoreMessageTexture->setHeight(50);
 
 	// Load the health texture
 	healthTexture = new Texture(renderer);
@@ -363,12 +351,9 @@ bool Level::loadText() {
 		std::cout << "Error loading health texture" << std::endl;
 		return false;
 	}
-	//healthTexture->setWidth(200);
-	//healthTexture->setHeight(50);
-
+	
 	// Add textures to textures vector
 	textures.push_back(scoreTexture);
-	textures.push_back(scoreMessageTexture);
 	textures.push_back(healthTexture);
 
 	return true;
@@ -529,9 +514,6 @@ void Level::render() {
 	// Render score
 	scoreTexture->loadFromText("Score: " + std::to_string(score), font, { 255, 255, 255 });
 	scoreTexture->render(SCREEN_WIDTH - scoreTexture->getWidth() - 10, 10);
-
-	// Render score message
-	scoreMessageTexture->render(SCREEN_WIDTH - scoreMessageTexture->getWidth() - 10, 50);
 
 	// Render health
 	healthTexture->loadFromText("Health: " + std::to_string(player->getHp()), font, { 255, 255, 255 });

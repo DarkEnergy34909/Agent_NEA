@@ -11,6 +11,7 @@
 #include "Character.h"
 #include "Player.h"
 #include "Level.h"
+#include "MainMenu.h"
 
 class Game {
 	public:
@@ -51,6 +52,9 @@ class Game {
 
 		// The game level
 		Level* level;
+
+		// The main menu
+		MainMenu* mainMenu;
 
 
 };

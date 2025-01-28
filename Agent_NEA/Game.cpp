@@ -8,6 +8,7 @@ Game::Game() {
 	window = NULL;
 
 	level = NULL;
+	mainMenu = NULL;
 }
 
 Game::~Game() {
@@ -67,11 +68,20 @@ bool Game::init() {
 	// Initialise the game level
 	level = new Level(window, renderer);
 
+	// Initialise the main menu
+	mainMenu = new MainMenu(window, renderer);
+
 	return true; 
 
 }
 
 bool Game::loadMedia() {
+	// Load main menu
+	if (!mainMenu->loadMenu()) {
+		std::cout << "Error loading main menu" << std::endl;
+		return false;
+	}
+
 	// Load level media
 	if (!level->loadLevel()) {
 		std::cout << "Error loading level" << std::endl;
@@ -98,6 +108,10 @@ void Game::close() {
 	delete level;
 	level = NULL;
 
+	// Delete the main menu
+	delete mainMenu;
+	mainMenu = NULL;
+
 	// Close the renderer
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
@@ -119,6 +133,43 @@ void Game::mainLoop() {
 
 	// Input event
 	SDL_Event e;
+
+	// Test loop for the main menu
+	while (!quit) {
+		// When an event is detected
+		while (SDL_PollEvent(&e) != 0) {
+
+			// Quit the game if the user closes the window
+			if (e.type == SDL_QUIT) {
+				quit = true;
+			}
+			else {
+				// Handle input
+				mainMenu->handleInput(e);
+			}
+			
+		}
+
+		// Clear previous frame
+		SDL_RenderClear(renderer);
+
+		// Update the main menu
+		mainMenu->update();
+
+		// Render everything to the screen
+		SDL_RenderPresent(renderer);
+
+		// If the game has started, break the loop
+		if (mainMenu->isGameStarted()) {
+			break;
+		}
+
+		// If the user has quit, quit the game
+		if (mainMenu->hasQuit()) {
+			quit = true;
+		}
+	}
+
 
 	// Main loop
 	while (!quit) {
