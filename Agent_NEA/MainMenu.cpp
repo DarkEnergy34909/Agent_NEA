@@ -12,12 +12,17 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 	instructions = NULL;
 	settings = NULL;
 	quit = NULL;
+	back = NULL;
+	instructionsText = NULL;
 
 	// Set font to null initially
 	font = NULL;
 
 	// Set the current menu option to play
 	currentOption = PLAY;
+
+	// Set the current menu screen to main menu
+	currentScreen = MAIN_MENU;
 
 	// Set game started to false
 	gameStarted = false;
@@ -86,6 +91,28 @@ bool MainMenu::loadMenu() {
 		return false;
 	}
 
+	// Load the back texture
+	back = new Texture(renderer);
+	if (!back->loadFromText("Back", font, { 255,255,255 })) {
+		std::cout << "Error loading back texture" << std::endl;
+		return false;
+	}
+
+	// Load the instructions texture
+	instructionsText = new Texture(renderer);
+	std::string instructionsString = "Instructions: \n\n"
+		"Use the WASD keys to move the player\n"
+		"Use the cursor to aim your weapon\n"
+		"Press the left mouse button to shoot\n"
+		"Collect cash to increase your score\n"
+		"Avoid the enemies\n"
+		"Unalerted enemies will have a white vision circle\n"
+		"Alerted enemies will have a red vision circle\n";
+	if (!instructionsText->loadFromText(instructionsString, font, { 255,255,255 })) {
+		std::cout << "Error loading instructions texture" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
@@ -99,66 +126,99 @@ void MainMenu::render() {
 	// Render the background
 	background->render(0, 0);
 
-	// Render the title
-	title->render((SCREEN_WIDTH - title->getWidth()) / 2, 50);
+	// If the current screen is the main menu, render the main menu
+	if (currentScreen == MAIN_MENU) {
+		// Render the title
+		title->render((SCREEN_WIDTH - title->getWidth()) / 2, 50);
 
-	// Render the play option
-	if (currentOption == PLAY) {
-		play->setColor(255, 0, 0);
-	}
-	else {
-		play->setColor(255, 255, 255);
-	}
-	play->render((SCREEN_WIDTH - play->getWidth()) / 2, 200);
+		// Render the play option
+		if (currentOption == PLAY) {
+			play->setColor(255, 0, 0);
+		}
+		else {
+			play->setColor(255, 255, 255);
+		}
+		play->render((SCREEN_WIDTH - play->getWidth()) / 2, 200);
 
-	// Render the instructions option
-	if (currentOption == INSTRUCTIONS) {
-		instructions->setColor(255, 0, 0);
-	}
-	else {
-		instructions->setColor(255, 255, 255);
-	}
-	instructions->render((SCREEN_WIDTH - instructions->getWidth()) / 2, 250);
+		// Render the instructions option
+		if (currentOption == INSTRUCTIONS) {
+			instructions->setColor(255, 0, 0);
+		}
+		else {
+			instructions->setColor(255, 255, 255);
+		}
+		instructions->render((SCREEN_WIDTH - instructions->getWidth()) / 2, 250);
 
-	// Render the settings option
-	if (currentOption == SETTINGS) {
-		settings->setColor(255, 0, 0);
-	}
-	else {
-		settings->setColor(255, 255, 255);
-	}
-	settings->render((SCREEN_WIDTH - settings->getWidth()) / 2, 300);
+		// Render the settings option
+		if (currentOption == SETTINGS) {
+			settings->setColor(255, 0, 0);
+		}
+		else {
+			settings->setColor(255, 255, 255);
+		}
+		settings->render((SCREEN_WIDTH - settings->getWidth()) / 2, 300);
 
-	// Render the quit option
-	if (currentOption == QUIT) {
-		quit->setColor(255, 0, 0);
+		// Render the quit option
+		if (currentOption == QUIT) {
+			quit->setColor(255, 0, 0);
+		}
+		else {
+			quit->setColor(255, 255, 255);
+		}
+		quit->render((SCREEN_WIDTH - quit->getWidth()) / 2, 350);
 	}
-	else {
-		quit->setColor(255, 255, 255);
+
+	// If the current screen is the instructions menu, render the instructions menu
+	else if (currentScreen == INSTRUCTIONS_MENU) {
+		// Render instructions
+		instructionsText->render(25, 25);
+
+		// Render the back option
+		back->setColor(255, 0, 0);
+		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 400);
 	}
-	quit->render((SCREEN_WIDTH - quit->getWidth()) / 2, 350);
+
+	// If the current screen is the settings menu, render the settings menu
+	else if (currentScreen == SETTINGS_MENU) {
+		// TODO
+	}
 
 }
 
 void MainMenu::handleInput(SDL_Event& e) {
 	// If a key is pressed
 	if (e.type == SDL_KEYDOWN) {
-		switch (e.key.keysym.sym) {
-			// If the up arrow is pressed, move the current option up
-			case SDLK_UP:
-				currentOption = (currentOption + 3) % 4;
-				break;
+		// If the user is on the main menu screen
+		if (currentScreen == MAIN_MENU) {
+			switch (e.key.keysym.sym) {
+				// If the up arrow is pressed, move the current option up
+				case SDLK_UP:
+					currentOption = (currentOption + 3) % 4;
+					break;
 
-			// If the down arrow is pressed, move the current option down
-			case SDLK_DOWN:
-				currentOption = (currentOption + 1) % 4;
-				break;
+				// If the down arrow is pressed, move the current option down
+				case SDLK_DOWN:
+					currentOption = (currentOption + 1) % 4;
+					break;
 
-			// If the enter key is pressed, select the current option
-			case SDLK_RETURN:
-				selectOption();
-				break;
+				// If the enter key is pressed, select the current option
+				case SDLK_RETURN:
+					selectOption();
+					break;
 
+			}
+		}
+		// If the user is on the instructions screen
+		else if (currentScreen == INSTRUCTIONS_MENU) {
+			// If the enter key is pressed, go back to the main menu
+			if (e.key.keysym.sym == SDLK_RETURN) {
+				currentScreen = MAIN_MENU;
+			}
+		}
+
+		// If the user is on the settings screen
+		else if (currentScreen == SETTINGS_MENU) {
+			// TODO
 		}
 	}
 }
@@ -172,7 +232,8 @@ void MainMenu::selectOption() {
 
 		// If the current option is instructions, open the instructions menu
 		case INSTRUCTIONS:
-			// TODO
+			// Set the current screen to the instructions menu
+			currentScreen = INSTRUCTIONS_MENU;
 			break;
 
 		// If the current option is settings, open the settings menu
@@ -214,6 +275,12 @@ void MainMenu::close() {
 
 	delete quit;
 	quit = NULL;
+
+	delete back;
+	back = NULL;
+
+	delete instructionsText;
+	instructionsText = NULL;
 
 	// Close the font
 	TTF_CloseFont(font);

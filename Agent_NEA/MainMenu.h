@@ -5,6 +5,10 @@ enum MenuOption {
 	PLAY, INSTRUCTIONS, SETTINGS, QUIT
 };
 
+enum MenuScreen {
+	MAIN_MENU, INSTRUCTIONS_MENU, SETTINGS_MENU
+};
+
 class MainMenu {
 	public:
 		// Constructor
@@ -73,8 +77,17 @@ class MainMenu {
 		// The quit texture
 		Texture* quit;
 
+		// The back texture
+		Texture* back;
+
+		// The instructions screen texture
+		Texture* instructionsText;
+
 		// The current menu option selected
 		int currentOption;
+
+		// The current menu screen
+		int currentScreen;
 
 		// Whether the game has started
 		bool gameStarted;
