@@ -171,7 +171,7 @@ void MainMenu::render() {
 	// If the current screen is the instructions menu, render the instructions menu
 	else if (currentScreen == INSTRUCTIONS_MENU) {
 		// Render instructions
-		instructionsText->render(25, 25);
+		instructionsText->render(10, 10);
 
 		// Render the back option
 		back->setColor(255, 0, 0);
