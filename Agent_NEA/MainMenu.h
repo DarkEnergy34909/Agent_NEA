@@ -2,7 +2,7 @@
 #include "Texture.h"
 
 enum MenuOption {
-	PLAY, SETTINGS, QUIT
+	PLAY, INSTRUCTIONS, SETTINGS, QUIT
 };
 
 class MainMenu {
@@ -64,13 +64,16 @@ class MainMenu {
 		// The play texture
 		Texture* play;
 
+		// The instructions texture
+		Texture* instructions;
+
 		// The settings texture
 		Texture* settings;
 
 		// The quit texture
 		Texture* quit;
 
-		// The current menu option
+		// The current menu option selected
 		int currentOption;
 
 		// Whether the game has started

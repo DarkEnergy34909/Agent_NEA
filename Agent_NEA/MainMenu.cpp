@@ -9,6 +9,7 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 	background = NULL;
 	title = NULL;
 	play = NULL;
+	instructions = NULL;
 	settings = NULL;
 	quit = NULL;
 
@@ -52,7 +53,7 @@ bool MainMenu::loadMenu() {
 
 	// Load the title texture
 	title = new Texture(renderer);
-	if (!title->loadFromText("The Game", font, { 255,255,255 })) {
+	if (!title->loadFromText("Agent", font, { 255,255,255 })) {
 		std::cout << "Error loading title texture" << std::endl;
 		return false;
 	}
@@ -61,6 +62,13 @@ bool MainMenu::loadMenu() {
 	play = new Texture(renderer);
 	if (!play->loadFromText("Play", font, { 255,255,255 })) {
 		std::cout << "Error loading play texture" << std::endl;
+		return false;
+	}
+
+	// Load the instructions texture
+	instructions = new Texture(renderer);
+	if (!instructions->loadFromText("Instructions", font, { 255,255,255 })) {
+		std::cout << "Error loading instructions texture" << std::endl;
 		return false;
 	}
 
@@ -103,6 +111,15 @@ void MainMenu::render() {
 	}
 	play->render((SCREEN_WIDTH - play->getWidth()) / 2, 200);
 
+	// Render the instructions option
+	if (currentOption == INSTRUCTIONS) {
+		instructions->setColor(255, 0, 0);
+	}
+	else {
+		instructions->setColor(255, 255, 255);
+	}
+	instructions->render((SCREEN_WIDTH - instructions->getWidth()) / 2, 250);
+
 	// Render the settings option
 	if (currentOption == SETTINGS) {
 		settings->setColor(255, 0, 0);
@@ -110,7 +127,7 @@ void MainMenu::render() {
 	else {
 		settings->setColor(255, 255, 255);
 	}
-	settings->render((SCREEN_WIDTH - settings->getWidth()) / 2, 250);
+	settings->render((SCREEN_WIDTH - settings->getWidth()) / 2, 300);
 
 	// Render the quit option
 	if (currentOption == QUIT) {
@@ -119,7 +136,7 @@ void MainMenu::render() {
 	else {
 		quit->setColor(255, 255, 255);
 	}
-	quit->render((SCREEN_WIDTH - quit->getWidth()) / 2, 300);
+	quit->render((SCREEN_WIDTH - quit->getWidth()) / 2, 350);
 
 }
 
@@ -129,12 +146,12 @@ void MainMenu::handleInput(SDL_Event& e) {
 		switch (e.key.keysym.sym) {
 			// If the up arrow is pressed, move the current option up
 			case SDLK_UP:
-				currentOption = (currentOption + 2) % 3;
+				currentOption = (currentOption + 3) % 4;
 				break;
 
 			// If the down arrow is pressed, move the current option down
 			case SDLK_DOWN:
-				currentOption = (currentOption + 1) % 3;
+				currentOption = (currentOption + 1) % 4;
 				break;
 
 			// If the enter key is pressed, select the current option
@@ -147,21 +164,26 @@ void MainMenu::handleInput(SDL_Event& e) {
 }
 
 void MainMenu::selectOption() {
-	// If the current option is play, start the game
 	switch (currentOption) {
-	case PLAY:
-		gameStarted = true;
-		break;
+		// If the current option is play, start the game
+		case PLAY:
+			gameStarted = true;
+			break;
+
+		// If the current option is instructions, open the instructions menu
+		case INSTRUCTIONS:
+			// TODO
+			break;
 
 		// If the current option is settings, open the settings menu
-	case SETTINGS:
-		// TODO
-		break;
+		case SETTINGS:
+			// TODO
+			break;
 
 		// If the current option is quit, quit the game
-	case QUIT:
-		gameQuit = true;
-		break;
+		case QUIT:
+			gameQuit = true;
+			break;
 	}
 }
 
@@ -183,6 +205,9 @@ void MainMenu::close() {
 
 	delete play;
 	play = NULL;
+
+	delete instructions;
+	instructions = NULL;
 
 	delete settings;
 	settings = NULL;
