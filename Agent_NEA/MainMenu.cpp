@@ -42,6 +42,9 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Set the FPS to 60
 	fps = 60;
+
+	// Set the score to 0
+	score = 0;
 	
 }
 
@@ -149,7 +152,7 @@ bool MainMenu::loadMenu() {
 
 	// Load the game over texture
 	gameOver = new Texture(renderer);
-	if (!gameOver->loadFromText("Game Over!", font, { 255,255,255 })) {
+	if (!gameOver->loadFromText("Game Over!\n\nScore: " + std::to_string(score), font, {255,255,255})) {
 		std::cout << "Error loading game over texture" << std::endl;
 		return false;
 	}
@@ -422,6 +425,13 @@ void MainMenu::setScreen(int screen) {
 
 void MainMenu::setGameStarted(bool gameStarted) {
 	this->gameStarted = gameStarted;
+}
+
+void MainMenu::setScore(int score) {
+	this->score = score;
+
+	// Update the game over texture
+	gameOver->loadFromText("Game Over!\n\nScore: " + std::to_string(score), font, { 255,255,255 });
 }
 
 void MainMenu::close() {

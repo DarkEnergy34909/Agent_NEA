@@ -563,6 +563,10 @@ void Level::updateScore(int scoreDifference) {
 
 }
 
+int Level::getScore() {
+	return score;
+}
+
 void Level::updateEnemies() {
 	// Update each enemy in the game
 	if (enemies.empty()) {

@@ -69,6 +69,9 @@ class Level {
 		// Update the user's score
 		void updateScore(int scoreDifference);
 
+		// Get the user's score
+		int getScore();
+
 		// Spawn a new enemy at a random position
 		void spawnEnemy();
 

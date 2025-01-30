@@ -57,6 +57,9 @@ class MainMenu {
 		// Closes the main menu
 		void close();
 
+		// Sets the score
+		void setScore(int score);
+
 
 	private:
 		// File path
@@ -131,4 +134,7 @@ class MainMenu {
 
 		// The FPS
 		int fps;
+
+		// The score displayed on the game over screen
+		int score;
 };

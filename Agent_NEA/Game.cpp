@@ -216,7 +216,10 @@ void Game::mainLoop() {
 
 			// If the level is not running, quit the gamedd
 			if (!level->isRunning()) {
-				//int score = level->getScore();
+				// Get the score from the level and add it to the main menu
+				int score = level->getScore();
+				mainMenu->setScore(score);
+
 				// Set the screen to the game over menu
 				mainMenu->setScreen(GAME_OVER_MENU);
 
