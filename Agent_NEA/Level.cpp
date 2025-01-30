@@ -65,6 +65,9 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Level is running initially
 	running = true;
 
+	// Alarm is not triggered initially
+	alarmTriggered = false;
+
 	// Set level timer to 0
 	levelTimer = 0;
 
@@ -76,6 +79,14 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Set shoot sound to null initially
 	shootSound = NULL;
+
+	// Set cash sound to null initially
+	cashSound = NULL;
+
+	// Set alarm sound to null initially
+	alarmSound = NULL;
+
+
 }
 
 Level::~Level() {
@@ -116,8 +127,20 @@ void Level::close() {
 	characters.clear();
 	textures.clear();
 
-	// Delete the shoot sound
+	// Stop all audio from playing
+	Mix_HaltChannel(-1);
+
+	// Delete sounds
 	Mix_FreeChunk(shootSound);
+	shootSound = NULL;
+
+	Mix_FreeChunk(cashSound);
+	cashSound = NULL;
+
+	Mix_FreeChunk(alarmSound);
+	alarmSound = NULL;
+
+
 }
 
 bool Level::loadObjects() {
@@ -324,6 +347,20 @@ bool Level::loadObjects() {
 		return false;
 	}
 
+	// Load the cash sound effect
+	cashSound = Mix_LoadWAV((PATH + "cash.wav").c_str());
+	if (cashSound == NULL) {
+		std::cout << "Error loading cash sound" << std::endl;
+		return false;
+	}
+
+	// Load the alarm sound effect
+	alarmSound = Mix_LoadWAV((PATH + "alarm.wav").c_str());
+	if (alarmSound == NULL) {
+		std::cout << "Error loading alarm sound" << std::endl;
+		return false;
+	}
+
 
 	return true;
 }
@@ -373,7 +410,7 @@ bool Level::loadLevel() {
 
 	// Initialise the tileset texture
 	Texture* tileset = new Texture(renderer);
-	if (!tileset->loadFromFile(PATH + "tileset2.png")) {
+	if (!tileset->loadFromFile(PATH + "tileset.png")) {
 		std::cout << "Error loading tileset" << std::endl;
 		return false;
 	}
@@ -573,8 +610,8 @@ void Level::updateEnemies() {
 		return;
 	}
 
-	// Flag to check if all enemies are passive
-	bool allPassive = true;
+	// Flag to check how many enemies are alerted
+	int alertedEnemies = 0;
 
 	for (auto& enemy : enemies) {
 
@@ -613,8 +650,8 @@ void Level::updateEnemies() {
 
 			// If the enemy is alerted, move towards the player and shoot at them
 			else if (enemy->getAwareness() == ALERTED) {
-				// Set allPassive to false
-				allPassive = false;
+				// Increment the number of alerted enemies
+				alertedEnemies++;
 
 				// If enemy is further than 75 pixels from the player, calculate a path and move towards the player
 				if (calculateDistance(targetPosX, targetPosY, enemy->getPosX() + enemy->getWidth() / 2, enemy->getPosY() + enemy->getHeight() / 2) > 75.0) {
@@ -665,14 +702,34 @@ void Level::updateEnemies() {
 	}
 
 	// Every 2000 frames, if all enemies are passive, increase score by 30
-	if (frameCounter % 2000 == 0 && allPassive) {
+	if (frameCounter % 2000 == 0 && alertedEnemies == 0) {
 		std::cout << "Stealth bonus: " << std::endl;
 
 		updateScore(30);
 	}
 
-	// Every 2000 frames, add a new enemy
-	if (frameCounter % 1500 == 0) {
+	// If at least 3 enemies are alerted, set all enemies to alerted and play an alarm sound effect
+	if (alertedEnemies >= 3 && !alarmTriggered) {
+		// Trigger the alarm
+		alarmTriggered = true;
+
+		for (auto& enemy : enemies) {
+			if (enemy != NULL) {
+				enemy->setAwareness(ALERTED);
+			}
+		}
+
+		// Play the alarm sound effect
+		Mix_PlayChannel(0, alarmSound, -1);
+
+
+		// Reduce the player's score by 100
+		updateScore(-100);
+	
+	}
+
+	// Every 1000 frames, add a new enemy
+	if (frameCounter % 1000 == 0) {
 		spawnEnemy();
 	}
 	
@@ -839,6 +896,9 @@ void Level::moveEntities() {
 
 		// Increase score by 100
 		score += 100;
+
+		// Play the cash pickup sound effect
+		Mix_PlayChannel(-1, cashSound, 0);
 
 		// Spawn the item elsewhere
 		spawnObject(item);
@@ -1048,6 +1108,11 @@ void Level::spawnEnemy() {
 		randomPos = getWaypoint();
 		enemy->setPosX(randomPos.first);
 		enemy->setPosY(randomPos.second);
+	}
+
+	// If the alarm has been triggered, set the enemy to alerted
+	if (alarmTriggered) {
+		enemy->setAwareness(ALERTED);
 	}
 
 	// Add the enemy to the game
