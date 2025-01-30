@@ -14,6 +14,10 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 	quit = NULL;
 	back = NULL;
 	instructionsText = NULL;
+	settingsText = NULL;
+	volumeSetting = NULL;
+	fpsSetting = NULL;
+	gameOver = NULL;
 
 	// Set font to null initially
 	font = NULL;
@@ -24,11 +28,20 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set the current menu screen to main menu
 	currentScreen = MAIN_MENU;
 
+	// Set the current settings option to volume
+	currentSettingsOption = VOLUME;
+
 	// Set game started to false
 	gameStarted = false;
 
 	// Set game quit to false
 	gameQuit = false;
+
+	// Set the volume to 50
+	volume = 50;
+
+	// Set the FPS to 60
+	fps = 60;
 	
 }
 
@@ -113,6 +126,34 @@ bool MainMenu::loadMenu() {
 		return false;
 	}
 
+	// Load the settings text texture
+	settingsText = new Texture(renderer);
+	if (!settingsText->loadFromText("Settings:", font, { 255,255,255 })) {
+		std::cout << "Error loading settings text texture" << std::endl;
+		return false;
+	}
+
+	// Load the volume setting texture
+	volumeSetting = new Texture(renderer);
+	if (!volumeSetting->loadFromText("Volume: " + std::to_string(volume), font, { 255,255,255 })) {
+		std::cout << "Error loading volume setting texture" << std::endl;
+		return false;
+	}
+
+	// Load the FPS setting texture
+	fpsSetting = new Texture(renderer);
+	if (!fpsSetting->loadFromText("FPS: " + std::to_string(fps), font, { 255,255,255 })) {
+		std::cout << "Error loading FPS setting texture" << std::endl;
+		return false;
+	}
+
+	// Load the game over texture
+	gameOver = new Texture(renderer);
+	if (!gameOver->loadFromText("Game Over!", font, { 255,255,255 })) {
+		std::cout << "Error loading game over texture" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
@@ -178,9 +219,46 @@ void MainMenu::render() {
 		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 400);
 	}
 
-	// If the current screen is the settings menu, render the settings menu
+	// If the current screen is the settings menu, render the settings menudddd
 	else if (currentScreen == SETTINGS_MENU) {
-		// TODO
+		// Render the settings title
+		settingsText->render((SCREEN_WIDTH - settings->getWidth()) / 2, 50);
+
+		// Render the volume setting
+		if (currentSettingsOption == VOLUME) {
+			volumeSetting->setColor(255, 0, 0);
+		}
+		else {
+			volumeSetting->setColor(255, 255, 255);
+		}
+		volumeSetting->render((SCREEN_WIDTH - volumeSetting->getWidth()) / 2, 200);
+
+		// Render the FPS setting
+		if (currentSettingsOption == FPS) {
+			fpsSetting->setColor(255, 0, 0);
+		}
+		else {
+			fpsSetting->setColor(255, 255, 255);
+		}
+		fpsSetting->render((SCREEN_WIDTH - fpsSetting->getWidth()) / 2, 250);
+
+		// Render the back option
+		if (currentSettingsOption == BACK) {
+			back->setColor(255, 0, 0);
+		}
+		else {
+			back->setColor(255, 255, 255);
+		}
+		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 300);
+	}
+
+	// If the game is over, render the game over screen
+	else if (currentScreen == GAME_OVER_MENU) {
+		gameOver->render((SCREEN_WIDTH - gameOver->getWidth()) / 2, (SCREEN_HEIGHT - gameOver->getHeight()) / 2);
+
+		// Render the back option
+		back->setColor(255, 0, 0);
+		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 400);
 	}
 
 }
@@ -218,7 +296,80 @@ void MainMenu::handleInput(SDL_Event& e) {
 
 		// If the user is on the settings screen
 		else if (currentScreen == SETTINGS_MENU) {
-			// TODO
+			switch (e.key.keysym.sym) {
+				// If the up arrow is pressed, move the current option up
+				case SDLK_UP:
+					currentSettingsOption = (currentSettingsOption + 2) % 3;
+					break;
+
+				// If the down arrow is pressed, move the current option down
+				case SDLK_DOWN:
+					currentSettingsOption = (currentSettingsOption + 1) % 3;
+					break;
+
+				// If the left arrow is pressed, decrease the current setting
+				case SDLK_LEFT:
+					// If the current setting is volume, decrease the volume
+					if (currentSettingsOption == VOLUME) {
+						volume -= 1;
+						if (volume < 0) {
+							volume = 0;
+						}
+
+						// Update the volume setting texture
+						volumeSetting->loadFromText("Volume: " + std::to_string(volume), font, { 255,255,255 });
+					}
+
+					// If the current setting is FPS, decrease the FPS
+					else if (currentSettingsOption == FPS) {
+						fps -= 1;
+						if (fps < 20) {
+							fps = 20;
+						}
+
+						// Update the FPS setting texture
+						fpsSetting->loadFromText("FPS: " + std::to_string(fps), font, { 255,255,255 });
+					}
+					break;
+
+				// If the right arrow is pressed, increase the current setting
+				case SDLK_RIGHT:
+					// If the current setting is volume, increase the volume
+					if (currentSettingsOption == VOLUME) {
+						volume += 1;
+						if (volume > 100) {
+							volume = 100;
+						}
+
+						// Update the volume setting texture
+						volumeSetting->loadFromText("Volume: " + std::to_string(volume), font, { 255,255,255 });
+					}
+
+					// If the current setting is FPS, increase the FPS
+					else if (currentSettingsOption == FPS) {
+						fps += 1;
+						if (fps > 60) {
+							fps = 60;
+						}
+
+						// Update the FPS setting texture
+						fpsSetting->loadFromText("FPS: " + std::to_string(fps), font, { 255,255,255 });
+					}
+					break;
+
+				case SDLK_RETURN:
+					// If the current option is back, go back to the main menu
+					if (currentSettingsOption == BACK) {
+						currentScreen = MAIN_MENU;
+					}
+					break;
+			}
+		}
+		else if (currentScreen == GAME_OVER_MENU) {
+			// If the enter key is pressed, go back to the main menu
+			if (e.key.keysym.sym == SDLK_RETURN) {
+				currentScreen = MAIN_MENU;
+			}
 		}
 	}
 }
@@ -238,7 +389,8 @@ void MainMenu::selectOption() {
 
 		// If the current option is settings, open the settings menu
 		case SETTINGS:
-			// TODO
+			// Set the current screen to the settings menu
+			currentScreen = SETTINGS_MENU;
 			break;
 
 		// If the current option is quit, quit the game
@@ -254,6 +406,22 @@ bool MainMenu::isGameStarted() {
 
 bool MainMenu::hasQuit() {
 	return gameQuit;
+}
+
+int MainMenu::getVolume() {
+	return volume;
+}
+
+int MainMenu::getFPS() {
+	return fps;
+}
+
+void MainMenu::setScreen(int screen) {
+	currentScreen = screen;
+}
+
+void MainMenu::setGameStarted(bool gameStarted) {
+	this->gameStarted = gameStarted;
 }
 
 void MainMenu::close() {
@@ -281,6 +449,18 @@ void MainMenu::close() {
 
 	delete instructionsText;
 	instructionsText = NULL;
+
+	delete settingsText;
+	settingsText = NULL;
+
+	delete volumeSetting;
+	volumeSetting = NULL;
+
+	delete fpsSetting;
+	fpsSetting = NULL;	
+
+	delete gameOver;
+	gameOver = NULL;
 
 	// Close the font
 	TTF_CloseFont(font);

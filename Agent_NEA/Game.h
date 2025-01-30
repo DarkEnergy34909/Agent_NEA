@@ -27,6 +27,9 @@ class Game {
 		// Loads textures/sounds for the game
 		bool loadMedia();
 
+		// Loads the game menu
+		bool loadMenu();
+
 		// Closes the game and quits SDL
 		void close(); 
 
@@ -55,6 +58,12 @@ class Game {
 
 		// The main menu
 		MainMenu* mainMenu;
+
+		// The volume of the game
+		int volume = 50;
+
+		// The fps of the game
+		int fps = 60;
 
 
 };

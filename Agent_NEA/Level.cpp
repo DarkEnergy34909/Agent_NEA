@@ -340,14 +340,14 @@ bool Level::loadText() {
 
 	// Load the score texture
 	scoreTexture = new Texture(renderer);
-	if (!scoreTexture->loadFromText("Score: 0", font, { 255, 255, 255 })) {
+	if (!scoreTexture->loadFromText("Score: 0", font, { 255, 0, 0 })) {
 		std::cout << "Error loading score texture" << std::endl;
 		return false;
 	}
 
 	// Load the health texture
 	healthTexture = new Texture(renderer);
-	if (!healthTexture->loadFromText("Health: 100", font, { 255, 255, 255 })) {
+	if (!healthTexture->loadFromText("Health: 100", font, { 255, 0, 0 })) {
 		std::cout << "Error loading health texture" << std::endl;
 		return false;
 	}
@@ -373,7 +373,7 @@ bool Level::loadLevel() {
 
 	// Initialise the tileset texture
 	Texture* tileset = new Texture(renderer);
-	if (!tileset->loadFromFile(PATH + "tileset.png")) {
+	if (!tileset->loadFromFile(PATH + "tileset2.png")) {
 		std::cout << "Error loading tileset" << std::endl;
 		return false;
 	}
@@ -512,11 +512,11 @@ void Level::render() {
 	}
 
 	// Render score
-	scoreTexture->loadFromText("Score: " + std::to_string(score), font, { 255, 255, 255 });
+	scoreTexture->loadFromText("Score: " + std::to_string(score), font, { 255, 0, 0 });
 	scoreTexture->render(SCREEN_WIDTH - scoreTexture->getWidth() - 10, 10);
 
 	// Render health
-	healthTexture->loadFromText("Health: " + std::to_string(player->getHp()), font, { 255, 255, 255 });
+	healthTexture->loadFromText("Health: " + std::to_string(player->getHp()), font, { 255, 0, 0 });
 	healthTexture->render(10, 10);
 }
 

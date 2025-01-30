@@ -6,7 +6,11 @@ enum MenuOption {
 };
 
 enum MenuScreen {
-	MAIN_MENU, INSTRUCTIONS_MENU, SETTINGS_MENU
+	MAIN_MENU, INSTRUCTIONS_MENU, SETTINGS_MENU, GAME_OVER_MENU
+};
+
+enum SettingsOption {
+	VOLUME, FPS, BACK
 };
 
 class MainMenu {
@@ -37,6 +41,18 @@ class MainMenu {
 
 		// Returns whether the user has quit the game
 		bool hasQuit();
+
+		// Returns the volume level
+		int getVolume();
+
+		// Returns the FPS
+		int getFPS();
+
+		// Sets the game screen
+		void setScreen(int screen);
+
+		// Sets whether the game has started
+		void setGameStarted(bool gameStarted);
 
 		// Closes the main menu
 		void close();
@@ -83,8 +99,23 @@ class MainMenu {
 		// The instructions screen texture
 		Texture* instructionsText;
 
+		// The settings screen texture
+		Texture* settingsText;
+
+		// The volume texture
+		Texture* volumeSetting;
+
+		// The FPS texture
+		Texture* fpsSetting;
+
+		// The game over texture
+		Texture* gameOver;
+
 		// The current menu option selected
 		int currentOption;
+
+		// The current settings option selected
+		int currentSettingsOption;
 
 		// The current menu screen
 		int currentScreen;
@@ -94,4 +125,10 @@ class MainMenu {
 
 		// Whether the user has quit the game
 		bool gameQuit;
+
+		// The volume level
+		int volume;
+
+		// The FPS
+		int fps;
 };
