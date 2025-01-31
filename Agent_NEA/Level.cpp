@@ -373,7 +373,7 @@ bool Level::loadLevel() {
 
 	// Initialise the tileset texture
 	Texture* tileset = new Texture(renderer);
-	if (!tileset->loadFromFile(PATH + "tileset2.png")) {
+	if (!tileset->loadFromFile(PATH + "tileset.png")) {
 		std::cout << "Error loading tileset" << std::endl;
 		return false;
 	}
