@@ -95,6 +95,9 @@ class Level {
 		// The player's health texture
 		Texture* healthTexture;
 
+		// The stealth status texture
+		Texture* statusTexture;
+
 		// The text font
 		TTF_Font* font;
 
@@ -155,11 +158,20 @@ class Level {
 		// Shoot sound effect
 		Mix_Chunk* shootSound;
 
+		// Cash pickup sound effect
+		Mix_Chunk* cashSound;
+
+		// Alarm sound effect
+		Mix_Chunk* alarmSound;
+
 		// Whether the game is running
 		bool running;
 
 		// The user's current score
 		int score;
+
+		// Whether the alarm has been triggered
+		bool alarmTriggered;
 
 };
 

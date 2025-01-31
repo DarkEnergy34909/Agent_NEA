@@ -30,7 +30,7 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Set the current settings option to volume
 	currentSettingsOption = VOLUME;
-
+	
 	// Set game started to false
 	gameStarted = false;
 
@@ -116,14 +116,16 @@ bool MainMenu::loadMenu() {
 
 	// Load the instructions texture
 	instructionsText = new Texture(renderer);
-	std::string instructionsString = "Instructions: \n\n"
+	std::string instructionsString = "Instructions:\n\n"
 		"Use the WASD keys to move the player\n"
 		"Use the cursor to aim your weapon\n"
 		"Press the left mouse button to shoot\n"
 		"Collect cash to increase your score\n"
-		"Avoid the enemies\n"
+		"Avoid or silently kill enemies\n"
 		"Unalerted enemies will have a white vision circle\n"
-		"Alerted enemies will have a red vision circle\n";
+		"Alerted enemies will have a red vision circle\n"
+		"If you alert 2 or more enemies, an alarm sounds\n"
+		"and all enemies will be alerted\n";
 	if (!instructionsText->loadFromText(instructionsString, font, { 255,255,255 })) {
 		std::cout << "Error loading instructions texture" << std::endl;
 		return false;
@@ -219,7 +221,7 @@ void MainMenu::render() {
 
 		// Render the back option
 		back->setColor(255, 0, 0);
-		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 400);
+		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 435);
 	}
 
 	// If the current screen is the settings menu, render the settings menudddd

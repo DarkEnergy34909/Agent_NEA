@@ -60,7 +60,8 @@ bool Game::init() {
 	}
 
 	// Initialise SDL_mixer (with 6 channels) to play sounds
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 8, 2048) < 0) {
+	SDL_Init(SDL_INIT_AUDIO);
+	if (Mix_OpenAudioDevice(44100, MIX_DEFAULT_FORMAT, 8, 2048, NULL, 0) < 0) {
 		std::cout << "Error initialising SDL_mixer: " << Mix_GetError() << std::endl;
 		return false;
 	}
