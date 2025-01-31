@@ -25,6 +25,7 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set text textures to null initially
 	scoreTexture = NULL;
 	healthTexture = NULL;
+	statusTexture = NULL;
 
 	// Set font to null initially
 	font = NULL;
@@ -388,6 +389,13 @@ bool Level::loadText() {
 		std::cout << "Error loading health texture" << std::endl;
 		return false;
 	}
+
+	// Load the status texture
+	statusTexture = new Texture(renderer);
+	if (!statusTexture->loadFromText("Status: Undetected", font, { 0, 255, 0 })) {
+		std::cout << "Error loading status texture" << std::endl;
+		return false;
+	}
 	
 	// Add textures to textures vector
 	textures.push_back(scoreTexture);
@@ -555,6 +563,9 @@ void Level::render() {
 	// Render health
 	healthTexture->loadFromText("Health: " + std::to_string(player->getHp()), font, { 255, 0, 0 });
 	healthTexture->render(10, 10);
+
+	// Render status
+	statusTexture->render(10, SCREEN_HEIGHT - statusTexture->getHeight() - 10);
 }
 
 void Level::update() {
@@ -708,8 +719,18 @@ void Level::updateEnemies() {
 		updateScore(30);
 	}
 
+	// If all enemies are passive (and the alarm is not triggered), set status to undetected
+	if (alertedEnemies == 0 && !alarmTriggered) {
+		statusTexture->loadFromText("Status: Undetected", font, { 0, 255, 0 });
+	}
+
+	// If 1 enemy is alerted (and the alarm is not triggered), set status to partially detected
+	else if (alertedEnemies == 1 && !alarmTriggered) {
+		statusTexture->loadFromText("Status: Partially Detected", font, { 255, 255, 0 });
+	}
+
 	// If at least 3 enemies are alerted, set all enemies to alerted and play an alarm sound effect
-	if (alertedEnemies >= 3 && !alarmTriggered) {
+	if (alertedEnemies >= 2 && !alarmTriggered) {
 		// Trigger the alarm
 		alarmTriggered = true;
 
@@ -722,6 +743,8 @@ void Level::updateEnemies() {
 		// Play the alarm sound effect
 		Mix_PlayChannel(0, alarmSound, -1);
 
+		// Set status to detected
+		statusTexture->loadFromText("Status: Detected", font, { 255, 0, 0 });
 
 		// Reduce the player's score by 100
 		updateScore(-100);

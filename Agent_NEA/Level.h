@@ -95,6 +95,9 @@ class Level {
 		// The player's health texture
 		Texture* healthTexture;
 
+		// The stealth status texture
+		Texture* statusTexture;
+
 		// The text font
 		TTF_Font* font;
 
