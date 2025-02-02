@@ -274,10 +274,7 @@ void MainMenu::handleInput(SDL_Event& e) {
 		// If the user is on the main menu screen
 		if (currentScreen == MAIN_MENU) {
 			switch (e.key.keysym.sym) {
-				// If the up arrow is pressed, move the current option up
-				case SDLK_UP:
-					currentOption = (currentOption + 3) % 4;
-					break;
+				// If the up arrow is pressed, ma
 
 				// If the down arrow is pressed, move the current option down
 				case SDLK_DOWN:
