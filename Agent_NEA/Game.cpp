@@ -133,7 +133,7 @@ void Game::close() {
 	Mix_Quit();
 	SDL_Quit();
 }
-
+/*
 void Game::mainLoop() {
 	// Initialise quit flag
 	bool quit = false;
@@ -236,6 +236,76 @@ void Game::mainLoop() {
 		}
 	}
 }
+*/
+
+
+void Game::mainLoop() {
+	// Initialise quit flag
+	bool quit = false;
+
+	// Input event
+	SDL_Event e;
+
+	// Texture for testing
+	Texture defaultTexture = Texture(renderer);
+	if (!defaultTexture.loadFromFile(PATH + "player_test_1.png")) {
+		std::cout << "Error loading test texture" << std::endl;
+	}
+
+	// Texture for testing
+	Texture walkTexture1 = Texture(renderer);
+	if (!walkTexture1.loadFromFile(PATH + "player_test_2.png")) {
+		std::cout << "Error loading test texture" << std::endl;
+	}
+
+	// Texture for testing
+	Texture walkTexture2 = Texture(renderer);
+	if (!walkTexture2.loadFromFile(PATH + "player_test_3.png")) {
+		std::cout << "Error loading test texture" << std::endl;
+	}
+
+	// Player for testing
+	Player testPlayer = Player(&defaultTexture, 0, 0, 80, 140);
+
+	// Add animation textures
+	testPlayer.addAnimationTexture(&defaultTexture);
+	testPlayer.addAnimationTexture(&walkTexture1);
+	testPlayer.addAnimationTexture(&defaultTexture);
+	testPlayer.addAnimationTexture(&walkTexture2);
+
+
+
+	// Main loop
+	while (!quit) {
+
+		// When an event is detected
+		while (SDL_PollEvent(&e) != 0) {
+			// Quit the game if the user closes the window
+			if (e.type == SDL_QUIT) {
+				quit = true;
+			}
+
+			// If the user presses or releases a key, handle this input for the player
+			else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
+				testPlayer.handleInput(e);
+			}
+		}
+
+		// Clear the previous frame
+		SDL_RenderClear(renderer);
+
+		// Move the test player
+		testPlayer.moveX();
+		testPlayer.moveY();
+
+		// Render the test entity
+		testPlayer.render();
+
+		// Render updated screen
+		SDL_RenderPresent(renderer);
+	}
+}
+
 
 bool Game::start() {
 	// Start the game
