@@ -81,20 +81,8 @@ bool Game::init() {
 bool Game::loadMedia() {
 
 	// Load level media
-	if (!level->loadLevel()) {
+	if (!level->init()) {
 		std::cout << "Error loading level" << std::endl;
-		return false;
-	}
-
-	// Load level objects
-	if (!level->loadObjects()) {
-		std::cout << "Error loading objects" << std::endl;
-		return false;
-	}
-
-	// Load text
-	if (!level->loadText()) {
-		std::cout << "Error loading text" << std::endl;
 		return false;
 	}
 
@@ -246,33 +234,19 @@ void Game::mainLoop() {
 	// Input event
 	SDL_Event e;
 
-	// Texture for testing
-	Texture defaultTexture = Texture(renderer);
-	if (!defaultTexture.loadFromFile(PATH + "player_test_1.png")) {
-		std::cout << "Error loading test texture" << std::endl;
+	// Player default texture
+	Texture* playerTexture = new Texture(renderer);
+	if (!playerTexture->loadFromFile(PATH + "player_test_1.png")) {
+		std::cout << "Error loading player texture" << std::endl;
+		return;
 	}
 
-	// Texture for testing
-	Texture walkTexture1 = Texture(renderer);
-	if (!walkTexture1.loadFromFile(PATH + "player_test_2.png")) {
-		std::cout << "Error loading test texture" << std::endl;
+	// Player
+	Player* player = new Player(playerTexture, 0, 0, 50, 87);
+	if (player == NULL) {
+		std::cout << "Error loading player" << std::endl;
+		return;
 	}
-
-	// Texture for testing
-	Texture walkTexture2 = Texture(renderer);
-	if (!walkTexture2.loadFromFile(PATH + "player_test_3.png")) {
-		std::cout << "Error loading test texture" << std::endl;
-	}
-
-	// Player for testing
-	Player testPlayer = Player(&defaultTexture, 0, 0, 80, 140);
-
-	// Add animation textures
-	testPlayer.addAnimationTexture(&defaultTexture);
-	testPlayer.addAnimationTexture(&walkTexture1);
-	testPlayer.addAnimationTexture(&defaultTexture);
-	testPlayer.addAnimationTexture(&walkTexture2);
-
 
 
 	// Main loop
@@ -287,19 +261,15 @@ void Game::mainLoop() {
 
 			// If the user presses or releases a key, handle this input for the player
 			else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
-				testPlayer.handleInput(e);
+				// Input will be handled through Level later
 			}
 		}
 
 		// Clear the previous frame
 		SDL_RenderClear(renderer);
 
-		// Move the test player
-		testPlayer.moveX();
-		testPlayer.moveY();
-
-		// Render the test entity
-		testPlayer.render();
+		// TODO: Update the level
+		player->render(); 
 
 		// Render updated screen
 		SDL_RenderPresent(renderer);
