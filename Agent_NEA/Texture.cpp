@@ -8,9 +8,6 @@ Texture::Texture(SDL_Renderer* renderer) {
 
 	width = 0;
 	height = 0;
-
-	// Load texture from file
-	//loadFromFile(filePath);
 }
 
 Texture::~Texture() {
@@ -95,33 +92,18 @@ void Texture::free() {
 	}
 }
 
-void Texture::setColor(int r, int g, int b) {
-	// Set the colour of the texture
-	SDL_SetTextureColorMod(texture, r, g, b);
-}
-
-void Texture::setAlpha(int alpha) {
-	// Set the alpha of the texture
-	SDL_SetTextureAlphaMod(texture, alpha);
-}
-
-void Texture::setBlendMode(SDL_BlendMode blending) {
-	// Set the blend mode of the texture
-	SDL_SetTextureBlendMode(texture, blending);
-}
-
 void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	// The rectangle on the screen the texture is rendered to
-	SDL_Rect renderQuad = { x, y, width, height };
+	SDL_Rect renderRect = { x, y, width, height };
 
-	// If a clip is given, set the dimensions of the renderQuad to the clip dimensions
+	// If a clip is given, set the dimensions of the renderRect to the clip dimensions
 	if (clip != NULL) {
-		renderQuad.w = clip->w;
-		renderQuad.h = clip->h;
+		renderRect.w = clip->w;
+		renderRect.h = clip->h;
 	}
 
 	// Render the texture to the screen
-	SDL_RenderCopyEx(renderer, texture, clip, &renderQuad, angle, center, flip);
+	SDL_RenderCopyEx(renderer, texture, clip, &renderRect, angle, center, flip);
 }
 
 int Texture::getWidth() {
@@ -142,5 +124,20 @@ void Texture::setWidth(int width) {
 void Texture::setHeight(int height) {
 	// Set the height of the texture
 	this->height = height;
+}
+
+void Texture::setColor(int r, int g, int b) {
+	// Set the colour of the texture
+	SDL_SetTextureColorMod(texture, r, g, b);
+}
+
+void Texture::setAlpha(int alpha) {
+	// Set the alpha of the texture
+	SDL_SetTextureAlphaMod(texture, alpha);
+}
+
+void Texture::setBlendMode(SDL_BlendMode blending) {
+	// Set the blend mode of the texture
+	SDL_SetTextureBlendMode(texture, blending);
 }
 

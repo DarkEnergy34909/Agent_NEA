@@ -7,7 +7,14 @@ GameObject::GameObject(Texture* texture, int posX, int posY, int width, int heig
 
 	// Initialise dimensions
 	this->width = width;
+	if (width < 0) {
+		this->width = 0;
+	}
+
 	this->height = height;
+	if (height < 0) {
+		this->height = 0;
+	}
 
 	// Initialise collider
 	collider.x = posX;

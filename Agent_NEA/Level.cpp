@@ -99,8 +99,25 @@ Level::~Level() {
 }
 
 bool Level::init() {
-	// TODO
-	return false;
+	// Load the level itself 
+	if (!loadLevel()) {
+		std::cout << "Error loading level" << std::endl;
+		return false;
+	}
+
+	// Load level objects
+	if (!loadObjects()) {
+		std::cout << "Error loading objects" << std::endl;
+		return false;
+	}
+
+	// Load text
+	if (!loadText()) {
+		std::cout << "Error loading text" << std::endl;
+		return false;
+	}
+	
+	return true;
 }
 
 void Level::close() {
@@ -403,6 +420,7 @@ bool Level::loadText() {
 	// Add textures to textures vector
 	textures.push_back(scoreTexture);
 	textures.push_back(healthTexture);
+	textures.push_back(statusTexture);
 
 	return true;
 
@@ -425,6 +443,9 @@ bool Level::loadLevel() {
 		std::cout << "Error loading tileset" << std::endl;
 		return false;
 	}
+
+	// Add the tileset texture to the textures vector
+	textures.push_back(tileset);
 
 	// The position of each tile
 	int posX = 0;
@@ -524,14 +545,15 @@ bool Level::loadLevel() {
 	tileClips[TILE_BOTTOM_RIGHT].x = 240;
 	tileClips[TILE_BOTTOM_RIGHT].y = 160;
 
+	// Return true if the level loaded successfully
 	return true;
 }
 
 void Level::render() {
-	if (renderer == NULL) {
+	/*if (renderer == NULL) {
 		std::cout << "Error rendering: " << SDL_GetError() << std::endl;
 		return;
-	}
+	}*/
 
 	// Render the level itself (excluding walls)
 	for (auto& tile : tiles) {
