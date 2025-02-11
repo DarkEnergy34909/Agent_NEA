@@ -426,9 +426,6 @@ bool Level::loadLevel() {
 		return false;
 	}
 
-	// Add the tileset texture to the textures vector
-	textures.push_back(tileset);
-
 	// The position of each tile
 	int posX = 0;
 	int posY = 0;
@@ -723,6 +720,12 @@ void Level::updateEnemies() {
 		std::cout << "Stealth bonus: " << std::endl;
 
 		updateScore(30);
+
+		// EVALUATION
+		// Increase health by 10 if player health is less than or equal to 90
+		if (player->getHp() <= 90) {
+			player->takeDamage(-5);
+		}
 	}
 
 	// If all enemies are passive (and the alarm is not triggered), set status to undetected
