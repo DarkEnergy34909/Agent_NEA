@@ -31,9 +31,12 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	font = NULL;
 
 	// Initialise containers
+	textures = std::vector<Texture*>();
 	gameObjects = std::vector<GameObject*>();
 	entities = std::vector<Entity*>();
 	characters = std::vector<Character*>();
+	bullets = std::vector<Bullet*>();
+	enemies = std::vector<Enemy*>();
 
 	// Set player to null initially
 	player = NULL;
