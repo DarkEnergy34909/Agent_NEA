@@ -426,6 +426,9 @@ bool Level::loadLevel() {
 		return false;
 	}
 
+	// Add the tileset texture to the textures vector
+	textures.push_back(tileset);
+
 	// The position of each tile
 	int posX = 0;
 	int posY = 0;
