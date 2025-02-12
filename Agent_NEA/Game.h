@@ -64,6 +64,4 @@ class Game {
 
 		// The fps of the game
 		int fps = 60;
-
-
 };

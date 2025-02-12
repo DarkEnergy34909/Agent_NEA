@@ -121,7 +121,7 @@ void Game::close() {
 	Mix_Quit();
 	SDL_Quit();
 }
-/*
+
 void Game::mainLoop() {
 	// Initialise quit flag
 	bool quit = false;
@@ -224,30 +224,15 @@ void Game::mainLoop() {
 		}
 	}
 }
-*/
 
 
+/*
 void Game::mainLoop() {
 	// Initialise quit flag
 	bool quit = false;
 
 	// Input event
 	SDL_Event e;
-
-	// Player default texture
-	Texture* playerTexture = new Texture(renderer);
-	if (!playerTexture->loadFromFile(PATH + "player_test_1.png")) {
-		std::cout << "Error loading player texture" << std::endl;
-		return;
-	}
-
-	// Player
-	Player* player = new Player(playerTexture, 0, 0, 50, 87);
-	if (player == NULL) {
-		std::cout << "Error loading player" << std::endl;
-		return;
-	}
-
 
 	// Main loop
 	while (!quit) {
@@ -260,21 +245,23 @@ void Game::mainLoop() {
 			}
 
 			// If the user presses or releases a key, handle this input for the player
-			else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
-				// Input will be handled through Level later
+			else {
+				// Handle input
+				level->handleInput(e); 
 			}
 		}
 
 		// Clear the previous frame
 		SDL_RenderClear(renderer);
 
-		// TODO: Update the level
-		player->render(); 
+		// Update the level
+		level->update();
 
 		// Render updated screen
 		SDL_RenderPresent(renderer);
 	}
 }
+*/
 
 
 bool Game::start() {
