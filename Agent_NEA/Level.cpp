@@ -247,7 +247,7 @@ bool Level::loadObjects() {
 
 
 	// Load the item
-	GameObject* cash = new GameObject(itemTexture, 600, 440, 25, 15);
+	GameObject* cash = new GameObject(itemTexture, 760, 600, 25, 15);
 	if (cash == NULL) {
 		std::cout << "Error loading item" << std::endl;
 		return false;
@@ -437,7 +437,16 @@ bool Level::loadLevel() {
 		{TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED}
 	};
 
-	int storedLevel2[8][10];
+	int storedLevel2[8][10] = {
+		{TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED},
+		{TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN},
+		{TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE, TILE_LEFT, TILE_RIGHT, TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE},
+		{TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_LEFT, TILE_RIGHT, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED},
+		{TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_LEFT, TILE_RIGHT, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN},
+		{TILE_BLUE, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_BLUE, TILE_LEFT, TILE_RIGHT, TILE_BLUE, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_BLUE},
+		{TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED},
+		{TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN}
+	};
 
 	// Initialise the tileset texture
 	Texture* tileset = new Texture(renderer);
@@ -461,7 +470,7 @@ bool Level::loadLevel() {
 	for (int i = 0; i < TOTAL_TILES; i++) {
 
 		// Get tile type from the stored level
-		int tileType = storedLevel[verticalCounter][horizontalCounter];
+		int tileType = storedLevel2[verticalCounter][horizontalCounter];
 
 		// Initialise a new tile
 		Tile* tile = new Tile(tileType, posX, posY);

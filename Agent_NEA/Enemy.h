@@ -26,7 +26,7 @@ class Enemy : public Character {
 		void moveTo(int x, int y);
 
 		// Calculates a path to a point and returns the next point in the path
-		std::pair<int, int> calculatePath(int x, int y, int levelGrid[6][8]);
+		std::pair<int, int> calculatePath(int x, int y, int levelGrid[8][10]);
 
 		// Detects whether an object is within the enemy's cone of vision
 		bool canSee(SDL_Rect collider);
@@ -44,7 +44,7 @@ class Enemy : public Character {
 		int getAwareness();
 
 		// Moves the enemy to a waypoint
-		void moveToCurrentWaypoint(int levelGrid[6][8]);
+		void moveToCurrentWaypoint(int levelGrid[8][10]);
 
 		// Sets the waypoint
 		void setWaypoint(std::pair<int, int> waypoint);
@@ -72,7 +72,7 @@ class Enemy : public Character {
 		int enemyType;
 
 		// Gets adjacent grid positions
-		std::vector<GridPosition> getAdjacentPositions(GridPosition position, int levelGrid[6][8]);
+		std::vector<GridPosition> getAdjacentPositions(GridPosition position, int levelGrid[8][10]);
 
 		// The current waypoint the enemy is moving towards
 		std::pair<int, int> currentWaypoint;

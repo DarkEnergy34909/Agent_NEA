@@ -81,7 +81,7 @@ class Level {
 
 	private:
 		// File path
-		const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
+		const std::string PATH = "C:/Users/Sebastian Kember/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
 
 		// The window the level is rendered to
 		SDL_Window* window;
@@ -102,22 +102,30 @@ class Level {
 		TTF_Font* font;
 
 		// Level constants
-		const int LEVEL_WIDTH = 640;
-		const int LEVEL_HEIGHT = 480;
+		//const int LEVEL_WIDTH = 640;
+		//const int LEVEL_HEIGHT = 480;
+		const int LEVEL_WIDTH = 800;
+		const int LEVEL_HEIGHT = 640;
 
 		// Screen constants - for now the screen will be the same size as the level
-		const int SCREEN_WIDTH = 640;
-		const int SCREEN_HEIGHT = 480;
+		//const int SCREEN_WIDTH = 640;
+		//const int SCREEN_HEIGHT = 480;
+		const int SCREEN_WIDTH = 800;
+		const int SCREEN_HEIGHT = 640;
 
 		// Tile constants
 		const int TILE_WIDTH = 80;
 		const int TILE_HEIGHT = 80;
 
-		static const int TOTAL_TILES = 48;
+
+		//static const int TOTAL_TILES = 48;
+		static const int TOTAL_TILES = 80;
 		static const int TOTAL_TILE_TYPES = 12;
 
-		static const int HORIZONTAL_TILES = 8;
-		static const int VERTICAL_TILES = 6;
+		//static const int HORIZONTAL_TILES = 8;
+		//static const int VERTICAL_TILES = 6;
+		static const int HORIZONTAL_TILES = 10;
+		static const int VERTICAL_TILES = 8;
 
 
 		// The tiles that make up the level

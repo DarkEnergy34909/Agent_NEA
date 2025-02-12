@@ -63,7 +63,7 @@ class MainMenu {
 
 	private:
 		// File path
-		const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
+		const std::string PATH = "C:/Users/Sebastian Kember/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
 
 		// The window
 		SDL_Window* window;
@@ -72,8 +72,10 @@ class MainMenu {
 		SDL_Renderer* renderer;
 
 		// Screen constants
-		const int SCREEN_WIDTH = 640;
-		const int SCREEN_HEIGHT = 480;
+		//const int SCREEN_WIDTH = 640;
+		//const int SCREEN_HEIGHT = 480;
+		const int SCREEN_WIDTH = 800;
+		const int SCREEN_HEIGHT = 640;
 
 		// The font
 		TTF_Font* font;
