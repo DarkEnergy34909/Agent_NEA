@@ -437,6 +437,8 @@ bool Level::loadLevel() {
 		{TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED}
 	};
 
+	int storedLevel2[8][10];
+
 	// Initialise the tileset texture
 	Texture* tileset = new Texture(renderer);
 	if (!tileset->loadFromFile(PATH + "tileset.png")) {

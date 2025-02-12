@@ -30,35 +30,8 @@ void Character::takeDamage(int damage) {
 }
 
 void Character::render() {
-	// Copied from Entity::render()
-	// If not moving , render the entity normally
-	if ((velX == 0 && velY == 0) || animationTextures.empty()) {
-		texture->render(posX, posY);
-
-		// Reset the animation
-		currentFrame = 0;
-	}
-	else {
-		// Render the Entity with the current animation texture
-		animationTextures[currentFrame]->render(posX, posY);
-
-		// Increment frame delay counter
-		frameDelayCounter++;
-
-		// If frame delay is reached, increment the current frame
-		if (frameDelayCounter == frameDelay) {
-			// Reset frame delay
-			frameDelayCounter = 0;
-
-			// Move onto the next texture
-			currentFrame++;
-		}
-
-		// If the end of the animation is reached, reset the animation
-		if (currentFrame == animationTextures.size()) {
-			currentFrame = 0;
-		}
-	}
+	// Render the character itself
+	Entity::render();
 
 	// Render the weapon if the character has one
 	if (weapon != NULL) {
