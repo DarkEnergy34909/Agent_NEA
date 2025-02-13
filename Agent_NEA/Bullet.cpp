@@ -1,6 +1,9 @@
 #include "Bullet.h"
 
 Bullet::Bullet(Texture* texture, int posX, int posY, double angle, int damage) : Entity(texture, posX, posY, BULLET_WIDTH, BULLET_HEIGHT) {
+	// Set the object type
+	objectType = BULLET;
+
 	// Set the angle of the bullet
 	this->angle = angle;
 
@@ -9,9 +12,6 @@ Bullet::Bullet(Texture* texture, int posX, int posY, double angle, int damage) :
 
 	// Calculate and set the x and y velocities of the bullet based on the angle
 	calculateVelocities();
-
-	// Set the object type
-	objectType = BULLET;
 }
 
 Bullet::~Bullet() {

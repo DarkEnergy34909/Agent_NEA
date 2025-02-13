@@ -1071,7 +1071,6 @@ void Level::updateCharacters() {
 	entities.erase(std::remove(entities.begin(), entities.end(), nullptr), entities.end());
 	characters.erase(std::remove(characters.begin(), characters.end(), nullptr), characters.end());
 	bullets.erase(std::remove(bullets.begin(), bullets.end(), nullptr), bullets.end());
-
 }
 
 bool Level::isColliding(SDL_Rect a, SDL_Rect b) {
