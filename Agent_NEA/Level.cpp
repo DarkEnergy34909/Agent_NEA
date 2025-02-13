@@ -823,7 +823,6 @@ void Level::handleInput(SDL_Event& e) {
 			}
 		}
 	}
-
 	// TODO: handle other inputs
 }
 

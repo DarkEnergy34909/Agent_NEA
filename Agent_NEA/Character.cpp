@@ -90,6 +90,7 @@ Bullet* Character::shoot(int x, int y) {
 				double angle = atan2(y - bulletY, x - bulletX) * 180 / M_PI;
 				// Set the angle of the weapon
 				weapon->setAngle(angle);
+
 			}
 
 			return weapon->fire(bulletX, bulletY);
