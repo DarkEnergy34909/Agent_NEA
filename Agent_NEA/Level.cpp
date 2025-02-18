@@ -623,6 +623,8 @@ void Level::update() {
 		// Update the level timer
 		levelTimer = SDL_GetTicks();
 
+		std::cout << levelTimer << std::endl;
+
 		// Update the frame counter
 		frameCounter++;
 
@@ -664,6 +666,7 @@ void Level::updateEnemies() {
 
 		if (enemy != NULL) {
 			// Get the player's centre position
+
 			int targetPosX = player->getPosX() + player->getWidth() / 2;
 			int targetPosY = player->getPosY() + player->getHeight() / 2;
 

@@ -219,6 +219,7 @@ void Enemy::setAwareness(int awareness) {
 	}
 }
 
+
 int Enemy::getAwareness() {
 	// Return enemy's awareness level
 	return awareness;
@@ -247,56 +248,8 @@ void Enemy::render() {
 		visionTexture->render(posX + (width / 2) - visionRadius, posY + (height / 2) - visionRadius);
 	}*/
 
-	// Copied from Character::render()
 	// If not moving , render the entity normally
-	if ((velX == 0 && velY == 0) || animationTextures.empty()) {
-		texture->render(posX, posY);
-
-		// Reset the animation
-		currentFrame = 0;
-	}
-	else {
-		// Render the Entity with the current animation texture
-		animationTextures[currentFrame]->render(posX, posY);
-
-		// Increment frame delay counter
-		frameDelayCounter++;
-
-		// If frame delay is reached, increment the current frame
-		if (frameDelayCounter == frameDelay) {
-			// Reset frame delay
-			frameDelayCounter = 0;
-
-			// Move onto the next texture
-			currentFrame++;
-		}
-
-		// If the end of the animation is reached, reset the animation
-		if (currentFrame == animationTextures.size()) {
-			currentFrame = 0;
-		}
-	}
-
-	// Render the weapon if the character has one
-	if (weapon != NULL) {
-		switch (weapon->getWeaponType()) {
-		case PISTOL:
-			// Check the angle of the weapon
-			// If the weapon is pointed to the right, render the gun to the right of the character
-			if (weapon->getAngle() > -90.0 && weapon->getAngle() < 90.0) {
-				weapon->render(posX + (3 * width / 4), posY + (height / 2));
-			}
-			// If the weapon is pointed to the left, render the gun to the left of the character
-			else {
-				weapon->render(posX + (width / 4) - weapon->getTexture()->getWidth(), posY + (height / 2));
-			}
-			break;
-		default:
-			// If the weapon type is invalid, print an error message
-			std::cout << "Invalid weapon type" << std::endl;
-			break;
-		}
-	}
+	Character::render();
 }
 
 void Enemy::renderVision() {

@@ -203,7 +203,7 @@ void Game::mainLoop() {
 			// Render everything to the screen
 			SDL_RenderPresent(renderer);
 
-			// If the level is not running, quit the gamedd
+			// If the level is not running, quit the game
 			if (!level->isRunning()) {
 				// Get the score from the level and add it to the main menu
 				int score = level->getScore();
@@ -226,6 +226,7 @@ void Game::mainLoop() {
 }
 
 
+
 /*
 void Game::mainLoop() {
 	// Initialise quit flag
@@ -244,10 +245,9 @@ void Game::mainLoop() {
 				quit = true;
 			}
 
-			// If the user presses or releases a key, handle this input for the player
 			else {
 				// Handle input
-				level->handleInput(e); 
+				mainMenu->handleInput(e); 
 			}
 		}
 
@@ -255,7 +255,7 @@ void Game::mainLoop() {
 		SDL_RenderClear(renderer);
 
 		// Update the level
-		level->update();
+		mainMenu->update();
 
 		// Render updated screen
 		SDL_RenderPresent(renderer);
