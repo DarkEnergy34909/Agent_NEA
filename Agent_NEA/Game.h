@@ -43,8 +43,8 @@ class Game {
 		// Screen dimensions
 		//const int SCREEN_WIDTH = 640;
 		//const int SCREEN_HEIGHT = 480;
-		const int SCREEN_WIDTH = 800;
-		const int SCREEN_HEIGHT = 640;
+		//const int SCREEN_WIDTH = 800;
+		//const int SCREEN_HEIGHT = 640;
 
 		// Path to media files
 		const std::string PATH = "C:/Users/Sebastian Kember/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";

@@ -29,20 +29,20 @@ void Bullet::calculateVelocities() {
 	velY = velMax * sin(radianAngle);
 }
 
-void Bullet::render() {
+void Bullet::render(int camX, int camY) {
 	// Copied from Entity::render() - renders the bullet at its current position
 	// If not moving , render the Bullet normally
 	if ((velX == 0 && velY == 0) || animationTextures.empty()) {
 		// Render the bullet at the given position with the given angle
 		//SDL_Point point = { 0,0 };
-		texture->render(posX, posY, NULL, angle, NULL);
+		texture->render(posX - camX, posY - camY, NULL, angle, NULL);
 
 		// Reset the animation
 		currentFrame = 0;
 	}
 	else {
 		// Render the Entity with the current animation texture
-		animationTextures[currentFrame]->render(posX, posY, NULL, angle);
+		animationTextures[currentFrame]->render(posX - camX, posY - camY, NULL, angle);
 
 		// Increment frame delay counter
 		frameDelayCounter++;

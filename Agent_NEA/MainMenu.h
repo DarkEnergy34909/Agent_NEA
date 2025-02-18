@@ -1,5 +1,6 @@
 #pragma once
 #include "Texture.h"
+#include "Constants.h"
 
 enum MenuOption {
 	PLAY, INSTRUCTIONS, SETTINGS, QUIT
@@ -74,8 +75,8 @@ class MainMenu {
 		// Screen constants
 		//const int SCREEN_WIDTH = 640;
 		//const int SCREEN_HEIGHT = 480;
-		const int SCREEN_WIDTH = 800;
-		const int SCREEN_HEIGHT = 640;
+		//const int SCREEN_WIDTH = 800;
+		//const int SCREEN_HEIGHT = 640;
 
 		// The font
 		TTF_Font* font;

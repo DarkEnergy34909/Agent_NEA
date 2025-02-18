@@ -90,6 +90,9 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set alarm sound to null initially
 	alarmSound = NULL;
 
+	// Initialise the camera to the top left of the level
+	camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+
 
 }
 
@@ -569,26 +572,26 @@ void Level::render() {
 	// Render the level itself (excluding walls)
 	for (auto& tile : tiles) {
 		if (!tile->isWall()) {
-			tile->render(&tileClips[tile->getTileType()]);
+			tile->render(&tileClips[tile->getTileType()], camera.x, camera.y);
 		}
 	}
 
 	// Render vision circles under game objects
 	for (auto& enemy : enemies) {
 		if (enemy != NULL) {
-			enemy->renderVision();
+			enemy->renderVision(camera.x, camera.y);
 		}
 	}
 
 	// Render GameObjects
 	for (auto& gameObject : gameObjects) {
-		gameObject->render();
+		gameObject->render(camera.x, camera.y);
 	}
 
 	// Render the level walls on top of the level
 	for (auto& tile : tiles) {
 		if (tile->isWall()) {
-			tile->render(&tileClips[tile->getTileType()]);
+			tile->render(&tileClips[tile->getTileType()], camera.x, camera.y);
 		}
 	}
 
@@ -616,6 +619,9 @@ void Level::update() {
 
 		// Move all entities
 		moveEntities();
+
+		// Adjust the camera to the player's position
+		adjustCamera();
 
 		// Render the level
 		render();
@@ -1192,4 +1198,23 @@ void Level::spawnEnemy() {
 
 bool Level::isRunning() {
 	return running;
+}
+
+void Level::adjustCamera() {
+	// Centre the camera over the player
+	camera.x = (player->getPosX() + player->getWidth() / 2) - SCREEN_WIDTH / 2;
+	camera.y = (player->getPosY() + player->getHeight() / 2) - SCREEN_HEIGHT / 2;
+	// Keep the camera in bounds
+	if (camera.x < 0) {
+		camera.x = 0;
+	}
+	if (camera.y < 0) {
+		camera.y = 0;
+	}
+	if (camera.x > LEVEL_WIDTH - camera.w) {
+		camera.x = LEVEL_WIDTH - camera.w;
+	}
+	if (camera.y > LEVEL_HEIGHT - camera.h) {
+		camera.y = LEVEL_HEIGHT - camera.h;
+	}
 }

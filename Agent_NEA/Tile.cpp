@@ -26,9 +26,9 @@ Tile::~Tile() {
 	texture->free();
 }
 
-void Tile::render(SDL_Rect* clip) {
+void Tile::render(SDL_Rect* clip, int camX, int camY) {
 	// Render the tile
-	texture->render(posX, posY, clip);
+	texture->render(posX - camX, posY - camY, clip);
 }
 
 SDL_Rect Tile::getTileCollider() {

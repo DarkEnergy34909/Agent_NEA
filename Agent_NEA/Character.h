@@ -18,7 +18,7 @@ class Character : public Entity {
 		void setWeapon(Weapon* weapon);
 
 		// Renders the character and the weapon (if the character has one)
-		virtual void render() override; 
+		virtual void render(int camX = 0, int camY = 0) override; 
 
 		// Returns a bullet fired by the character
 		Bullet* shoot(int x = -999, int y = -999);

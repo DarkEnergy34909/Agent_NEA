@@ -221,7 +221,7 @@ void MainMenu::render() {
 
 		// Render the back option
 		back->setColor(255, 0, 0);
-		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 560);
+		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 440);
 	}
 
 	// If the current screen is the settings menu, render the settings menudddd

@@ -14,7 +14,7 @@ class Bullet : public Entity {
 		void calculateVelocities();
 
 		// Renders the bullet
-		void render() override;
+		void render(int camX = 0, int camY = 0) override;
 
 		// Getters 
 		int getDamage();

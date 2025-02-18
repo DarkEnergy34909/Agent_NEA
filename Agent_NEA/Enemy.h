@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "Constants.h"
 #include <queue>
 #include <map>
 
@@ -35,10 +36,10 @@ class Enemy : public Character {
 		void setAwareness(int awareness);
 
 		// Renders the enemy and its vision cone
-		void render() override;
+		void render(int camX = 0, int camY = 0) override;
 
 		// Renders the enemy's vision cone
-		void renderVision();
+		void renderVision(int camX = 0, int camY = 0);
 
 		// Returns the awareness level of the enemy
 		int getAwareness();

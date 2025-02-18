@@ -9,6 +9,7 @@
 #include "Character.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Constants.h"
 
 class Level {
 	public: 
@@ -78,6 +79,9 @@ class Level {
 		// Checks if the game is running
 		bool isRunning();
 
+		// Adjusts the camera to follow the player
+		void adjustCamera();
+
 
 	private:
 		// File path
@@ -104,14 +108,14 @@ class Level {
 		// Level constants
 		//const int LEVEL_WIDTH = 640;
 		//const int LEVEL_HEIGHT = 480;
-		const int LEVEL_WIDTH = 800;
-		const int LEVEL_HEIGHT = 640;
+		//const int LEVEL_WIDTH = 800;
+		//const int LEVEL_HEIGHT = 640;
 
 		// Screen constants - for now the screen will be the same size as the level
 		//const int SCREEN_WIDTH = 640;
 		//const int SCREEN_HEIGHT = 480;
-		const int SCREEN_WIDTH = 800;
-		const int SCREEN_HEIGHT = 640;
+		//const int SCREEN_WIDTH = 800;
+		//const int SCREEN_HEIGHT = 640;
 
 		// Tile constants
 		const int TILE_WIDTH = 80;
@@ -151,9 +155,6 @@ class Level {
 		// The item the player has to collect
 		GameObject* item;
 
-		// A test enemy
-		//Enemy* enemy;
-
 		// Whether the level is paused
 		bool paused;
 
@@ -180,6 +181,9 @@ class Level {
 
 		// Whether the alarm has been triggered
 		bool alarmTriggered;
+
+		// The level camera
+		SDL_Rect camera;
 
 };
 

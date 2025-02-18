@@ -29,9 +29,9 @@ void Character::takeDamage(int damage) {
 	}
 }
 
-void Character::render() {
+void Character::render(int camX, int camY) {
 	// Render the character itself
-	Entity::render();
+	Entity::render(camX, camY);
 
 	// Render the weapon if the character has one
 	if (weapon != NULL) {
@@ -40,11 +40,11 @@ void Character::render() {
 				// Check the angle of the weapon
 				// If the weapon is pointed to the right, render the gun to the right of the character
 				if (weapon->getAngle() > -90.0 && weapon->getAngle() < 90.0) {
-					weapon->render(posX + (3 * width / 4), posY + (height / 2));
+					weapon->render(posX + (3 * width / 4) - camX, posY + (height / 2) - camY);
 				}
 				// If the weapon is pointed to the left, render the gun to the left of the character
 				else {
-					weapon->render(posX + (width / 4) - weapon->getTexture()->getWidth(), posY + (height / 2));
+					weapon->render(posX + (width / 4) - weapon->getTexture()->getWidth() - camX, posY + (height / 2) - camY);
 				}
 				break;
 			default:

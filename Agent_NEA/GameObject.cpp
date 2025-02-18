@@ -36,9 +36,9 @@ GameObject::~GameObject() {
 	// Do nothing
 }
 
-void GameObject::render() {
+void GameObject::render(int camX, int camY) {
 	// Render the texture at the object's position
-	texture->render(posX, posY);
+	texture->render(posX - camX, posY - camY);
 }
 
 int GameObject::getPosX() {

@@ -19,7 +19,7 @@ class GameObject {
 		virtual ~GameObject();
 
 		// Renders the GameObject
-		virtual void render();
+		virtual void render(int camX = 0, int camY = 0);
 
 		// Getters
 		int getPosX();

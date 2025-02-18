@@ -76,8 +76,8 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[8][10]) {
 	std::map<GridPosition, GridPosition> visited;
 
 	// Calculate starting position on the grid
-	int startingPosX = (this->posX / 800.0) * 10.0; // TODO: Replace these values with constants 
-	int startingPosY = (this->posY / 640.0) * 8.0;
+	int startingPosX = (this->posX / double(LEVEL_WIDTH)) * 10.0; // TODO: Replace these values with constants 
+	int startingPosY = (this->posY / double(LEVEL_HEIGHT)) * 8.0;
 
 	GridPosition startingPosition = { startingPosX, startingPosY };
 
@@ -88,8 +88,8 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[8][10]) {
 	visited[startingPosition] = { -1, -1 };
 
 	// Calculate the target position
-	int targetPosX = (x / 800.0) * 10.0;
-	int targetPosY = (y / 640.0) * 8.0;
+	int targetPosX = (x / double(LEVEL_WIDTH)) * 10.0;
+	int targetPosY = (y / double(LEVEL_HEIGHT)) * 8.0;
 
 	GridPosition targetPosition = { targetPosX, targetPosY };
 
@@ -135,8 +135,8 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[8][10]) {
 	}
 
 	// Calculate the actual x and y position of the next position in the path
-	int nextX = (currentPosition.first / 10.0) * 800.0;
-	int nextY = (currentPosition.second / 8.0) * 640.0;
+	int nextX = (currentPosition.first / 10.0) * double(LEVEL_WIDTH);
+	int nextY = (currentPosition.second / 8.0) * double(LEVEL_HEIGHT);
 
 	// Convert x and y position so the enemy moves to the centre of the tile
 	nextX += 80 / 2;
@@ -241,7 +241,7 @@ std::pair<int, int> Enemy::getCurrentWaypoint() {
 	return currentWaypoint;
 }
 
-void Enemy::render() {
+void Enemy::render(int camX, int camY) {
 	// First render the vision circle (under the character)
 	/*if (visionTexture != NULL) {
 		// Render the vision texture (to the centre of the enemy)
@@ -249,13 +249,13 @@ void Enemy::render() {
 	}*/
 
 	// If not moving , render the entity normally
-	Character::render();
+	Character::render(camX, camY);
 }
 
-void Enemy::renderVision() {
+void Enemy::renderVision(int camX, int camY) {
 	// Render the vision texture (to the centre of the enemy)
 	if (visionTexture != NULL) {
-		visionTexture->render(posX + (width / 2) - visionRadius, posY + (height / 2) - visionRadius);
+		visionTexture->render(posX + (width / 2) - visionRadius - camX, posY + (height / 2) - visionRadius - camY);
 	}
 }
 

@@ -10,7 +10,7 @@ class Tile {
 		~Tile();
 
 		// Renders the tile
-		void render(SDL_Rect* clip);
+		void render(SDL_Rect* clip, int camX = 0, int camY = 0);
 
 		// Getters
 

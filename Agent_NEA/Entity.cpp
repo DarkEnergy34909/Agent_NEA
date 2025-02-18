@@ -38,17 +38,17 @@ void Entity::addAnimationTexture(Texture* texture) {
 	animationTextures.push_back(texture);
 }
 
-void Entity::render() {
+void Entity::render(int camX, int camY) {
 	// If not moving , render the entity normally
 	if ((velX == 0 && velY == 0) || animationTextures.empty()) {
-		texture->render(posX, posY);
+		texture->render(posX - camX, posY - camY);
 
 		// Reset the animation
 		currentFrame = 0;
 	}
 	else {
 		// Render the Entity with the current animation texture
-		animationTextures[currentFrame]->render(posX, posY);
+		animationTextures[currentFrame]->render(posX - camX, posY - camY);
 
 		// Increment frame delay counter
 		frameDelayCounter++;
