@@ -262,6 +262,8 @@ bool Level::loadObjects() {
 	// Add item to containers
 	gameObjects.push_back(cash);
 
+
+	
 	// Load test enemy
 	Enemy* enemy1 = new Enemy(playerDefaultTexture, 500, 500, 40, 70, BASIC);
 	if (enemy1 == NULL) {
@@ -338,6 +340,7 @@ bool Level::loadObjects() {
 	entities.push_back(enemy3);
 	characters.push_back(enemy3);
 	enemies.push_back(enemy3);
+	
 
 	// Load the player
 	//Player* player = new Player(playerDefaultTexture, 0, 0, 50, 87);
@@ -453,7 +456,7 @@ bool Level::loadLevel() {
 
 	// Initialise the tileset texture
 	Texture* tileset = new Texture(renderer);
-	if (!tileset->loadFromFile(PATH + "tileset.png")) {
+	if (!tileset->loadFromFile(PATH + "tiles.png")) {
 		std::cout << "Error loading tileset" << std::endl;
 		return false;
 	}
@@ -473,7 +476,7 @@ bool Level::loadLevel() {
 	for (int i = 0; i < TOTAL_TILES; i++) {
 
 		// Get tile type from the stored level
-		int tileType = storedLevel2[verticalCounter][horizontalCounter];
+		int tileType = storedLevel[verticalCounter][horizontalCounter];
 
 		// Initialise a new tile
 		Tile* tile = new Tile(tileType, posX, posY);
@@ -594,7 +597,7 @@ void Level::render() {
 			tile->render(&tileClips[tile->getTileType()], camera.x, camera.y);
 		}
 	}
-
+	/*
 	// Render score
 	scoreTexture->loadFromText("Score: " + std::to_string(score), font, { 255, 0, 0 });
 	scoreTexture->render(SCREEN_WIDTH - scoreTexture->getWidth() - 10, 10);
@@ -605,6 +608,7 @@ void Level::render() {
 
 	// Render status
 	statusTexture->render(10, SCREEN_HEIGHT - statusTexture->getHeight() - 10);
+	*/
 }
 
 void Level::update() {
@@ -623,9 +627,6 @@ void Level::update() {
 		// Adjust the camera to the player's position
 		adjustCamera();
 
-		// Render the level
-		render();
-
 		// Update the level timer
 		levelTimer = SDL_GetTicks();
 
@@ -639,6 +640,9 @@ void Level::update() {
 			updateScore(1);
 		}
 	}
+
+	// Render the level
+	render();
 }
 
 void Level::updateScore(int scoreDifference) {
@@ -812,7 +816,13 @@ void Level::updateEnemies() {
 void Level::handleInput(SDL_Event& e) {
 	// Handle keypresses
 	if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP || e.type == SDL_MOUSEMOTION) {
-		player->handleInput(e);
+		// Handle pause key
+		if (e.key.keysym.sym == SDLK_p && e.type == SDL_KEYDOWN) {
+			paused = !paused;
+		}
+		else {
+			player->handleInput(e);
+		}
 	}
 	// Handle mouse clicks
 	else if (e.type == SDL_MOUSEBUTTONDOWN) {

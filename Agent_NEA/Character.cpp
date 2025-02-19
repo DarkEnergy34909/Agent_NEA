@@ -25,6 +25,7 @@ void Character::takeDamage(int damage) {
 
 	// If hp is less than or equal to 0, the character is dead
 	if (hp <= 0) {
+		hp = 0;
 		alive = false;
 	}
 }

@@ -122,6 +122,7 @@ void Game::close() {
 	SDL_Quit();
 }
 
+
 void Game::mainLoop() {
 	// Initialise quit flag
 	bool quit = false;
@@ -235,6 +236,26 @@ void Game::mainLoop() {
 	// Input event
 	SDL_Event e;
 
+	// Test texture
+	Texture testTexture = Texture(renderer);
+	if (!testTexture.loadFromFile(PATH + "car_test_image.png")) {
+		std::cout << "Error loading test texture" << std::endl;
+	}
+
+	// Test texture 2
+	Texture testTexture2 = Texture(renderer);
+	if (!testTexture2.loadFromFile(PATH + "car_test_image2.png")) {
+		std::cout << "Error loading test texture" << std::endl;
+	}
+
+	// Test entity
+	Entity testEntity = Entity(&testTexture, 0, 0, 100, 100);
+	testEntity.setVelX(1);
+	testEntity.setVelY(0);
+	testEntity.addAnimationTexture(&testTexture);
+	testEntity.addAnimationTexture(&testTexture2);
+
+
 	// Main loop
 	while (!quit) {
 
@@ -247,18 +268,20 @@ void Game::mainLoop() {
 
 			else {
 				// Handle input
-				mainMenu->handleInput(e); 
 			}
 		}
 
 		// Clear the previous frame
 		SDL_RenderClear(renderer);
 
-		// Update the level
-		mainMenu->update();
+		// Move and render the test entity
+		testEntity.moveX();
+		testEntity.moveY();
+		testEntity.render();
 
 		// Render updated screen
 		SDL_RenderPresent(renderer);
+		
 	}
 }
 */
