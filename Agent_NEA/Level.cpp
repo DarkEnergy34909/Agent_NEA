@@ -620,8 +620,6 @@ void Level::update() {
 		// Update characters
 		updateCharacters();
 
-		//std::cout << "Player health: " << player->getHp() << "/100" << std::endl;
-
 		// Move all entities
 		moveEntities();
 
@@ -631,7 +629,6 @@ void Level::update() {
 		// Update the level timer
 		levelTimer = SDL_GetTicks();
 
-		//std::cout << levelTimer << std::endl;
 
 		// Update the frame counter
 		frameCounter++;
