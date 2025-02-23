@@ -80,7 +80,5 @@ class Enemy : public Character {
 
 		// The enemy's vision texture
 		Texture* visionTexture;
-
-
 };
 

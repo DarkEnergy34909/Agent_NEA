@@ -44,8 +44,6 @@ class GameObject {
 
 		void setHeight(int height);
 
-
-
 	protected:
 		// Position of the GameObject within the level
 		int posX, posY;
@@ -61,6 +59,4 @@ class GameObject {
 
 		// The type of the GameObject
 		int objectType;
-		
-
 };

@@ -32,7 +32,7 @@ class Level {
 		bool loadText();
 
 		// Spawns all characters
-		void spawnCharacters();
+		//void spawnCharacters(); Didn't end up using this function
 
 		// Updates the level (called every frame)
 		void update();
@@ -184,6 +184,5 @@ class Level {
 
 		// The level camera
 		SDL_Rect camera;
-
 };
 

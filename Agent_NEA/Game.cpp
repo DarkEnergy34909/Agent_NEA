@@ -149,8 +149,10 @@ void Game::mainLoop() {
 					// Update game settings
 					if (mainMenu->getVolume() != volume) {
 						volume = mainMenu->getVolume();
+
+						// Set volume of all sounds - 128 is the maximum volume in SDL_mixer
 						int mixVolume = volume * (128.0 / 100.0);
-						Mix_Volume(-1, (volume * (128 / 100)));
+						Mix_Volume(-1, mixVolume);
 					}
 				}
 
@@ -225,67 +227,6 @@ void Game::mainLoop() {
 		}
 	}
 }
-
-
-
-/*
-void Game::mainLoop() {
-	// Initialise quit flag
-	bool quit = false;
-
-	// Input event
-	SDL_Event e;
-
-	// Test texture
-	Texture testTexture = Texture(renderer);
-	if (!testTexture.loadFromFile(PATH + "car_test_image.png")) {
-		std::cout << "Error loading test texture" << std::endl;
-	}
-
-	// Test texture 2
-	Texture testTexture2 = Texture(renderer);
-	if (!testTexture2.loadFromFile(PATH + "car_test_image2.png")) {
-		std::cout << "Error loading test texture" << std::endl;
-	}
-
-	// Test entity
-	Entity testEntity = Entity(&testTexture, 0, 0, 100, 100);
-	testEntity.setVelX(1);
-	testEntity.setVelY(0);
-	testEntity.addAnimationTexture(&testTexture);
-	testEntity.addAnimationTexture(&testTexture2);
-
-
-	// Main loop
-	while (!quit) {
-
-		// When an event is detected
-		while (SDL_PollEvent(&e) != 0) {
-			// Quit the game if the user closes the window
-			if (e.type == SDL_QUIT) {
-				quit = true;
-			}
-
-			else {
-				// Handle input
-			}
-		}
-
-		// Clear the previous frame
-		SDL_RenderClear(renderer);
-
-		// Move and render the test entity
-		testEntity.moveX();
-		testEntity.moveY();
-		testEntity.render();
-
-		// Render updated screen
-		SDL_RenderPresent(renderer);
-		
-	}
-}
-*/
-
 
 bool Game::start() {
 	// Start the game

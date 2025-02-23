@@ -40,8 +40,8 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set the volume to 50
 	volume = 50;
 
-	// Set the FPS to 60
-	fps = 60;
+	// Set the FPS to 40
+	fps = 40;
 
 	// Set the score to 0
 	score = 0;
@@ -120,12 +120,12 @@ bool MainMenu::loadMenu() {
 		"Use the WASD keys to move the player\n"
 		"Use the cursor to aim your weapon\n"
 		"Press the left mouse button to shoot\n"
-		"Collect cash to increase your score\n"
+		//"Collect cash to increase your score\n"
 		"Avoid or silently kill enemies\n"
 		"Unalerted enemies will have a white vision circle\n"
-		"Alerted enemies will have a red vision circle\n"
-		"If you alert 2 or more enemies, an alarm sounds\n"
-		"and all enemies will be alerted\n";
+		"Alerted enemies will have a red vision circle\n";
+		//"If you alert 2 or more enemies, an alarm sounds\n"
+		//"and all enemies will be alerted\n";
 	if (!instructionsText->loadFromText(instructionsString, font, { 255,255,255 })) {
 		std::cout << "Error loading instructions texture" << std::endl;
 		return false;
@@ -221,7 +221,7 @@ void MainMenu::render() {
 
 		// Render the back option
 		back->setColor(255, 0, 0);
-		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 440);
+		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 400);
 	}
 
 	// If the current screen is the settings menu, render the settings menudddd

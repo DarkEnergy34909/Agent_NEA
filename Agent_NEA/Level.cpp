@@ -291,6 +291,7 @@ bool Level::loadObjects() {
 	characters.push_back(enemy1);
 	enemies.push_back(enemy1);
 
+	
 	// Load another test enemy
 	Enemy* enemy2 = new Enemy(playerDefaultTexture, 400, 0, 40, 70, BASIC);
 	if (enemy2 == NULL) {
@@ -597,7 +598,7 @@ void Level::render() {
 			tile->render(&tileClips[tile->getTileType()], camera.x, camera.y);
 		}
 	}
-	/*
+	
 	// Render score
 	scoreTexture->loadFromText("Score: " + std::to_string(score), font, { 255, 0, 0 });
 	scoreTexture->render(SCREEN_WIDTH - scoreTexture->getWidth() - 10, 10);
@@ -608,7 +609,7 @@ void Level::render() {
 
 	// Render status
 	statusTexture->render(10, SCREEN_HEIGHT - statusTexture->getHeight() - 10);
-	*/
+	
 }
 
 void Level::update() {
@@ -630,7 +631,7 @@ void Level::update() {
 		// Update the level timer
 		levelTimer = SDL_GetTicks();
 
-		std::cout << levelTimer << std::endl;
+		//std::cout << levelTimer << std::endl;
 
 		// Update the frame counter
 		frameCounter++;
@@ -849,12 +850,6 @@ void Level::moveEntities() {
 
 	// Iterate over all entities
 	for (auto& entity: entities) {
-		//for (auto& e : entities) {
-			//std::cout << e << ", ";
-		//}
-		//std::cout << std::endl;
-		// Get the entity
-		//Entity* entity = *entityIterator;
 
 		bool isDeleted = false;
 
@@ -1012,10 +1007,10 @@ void Level::updateCharacters() {
 					if (enemy == character) {
 						enemy->setAwareness(ALERTED);
 
-						std::cout << "Enemy alerted" << std::endl;
+						//std::cout << "Enemy alerted" << std::endl;
 
 						// Reduce the player's score by 5 when the player alerts an enemy by shooting it
-						updateScore(-5);
+						//updateScore(-5);
 					}
 				}
 
