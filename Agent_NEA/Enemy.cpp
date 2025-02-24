@@ -68,7 +68,7 @@ void Enemy::moveTo(int x, int y) {
 	}
 }
 
-std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
+std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[8][10]) {
 	// Initialise a queue to store positions on the grid to visit
 	std::queue<GridPosition> positionQueue;
 
@@ -76,8 +76,8 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	std::map<GridPosition, GridPosition> visited;
 
 	// Calculate starting position on the grid
-	int startingPosX = (this->posX / double(LEVEL_WIDTH)) * 8.0; // TODO: Replace these values with constants 
-	int startingPosY = (this->posY / double(LEVEL_HEIGHT)) * 6.0;
+	int startingPosX = (this->posX / double(LEVEL_WIDTH)) * 10.0; // TODO: Replace these values with constants 
+	int startingPosY = (this->posY / double(LEVEL_HEIGHT)) * 8.0;
 
 	GridPosition startingPosition = { startingPosX, startingPosY };
 
@@ -88,8 +88,8 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	visited[startingPosition] = { -1, -1 };
 
 	// Calculate the target position
-	int targetPosX = (x / double(LEVEL_WIDTH)) * 8.0;
-	int targetPosY = (y / double(LEVEL_HEIGHT)) * 6.0;
+	int targetPosX = (x / double(LEVEL_WIDTH)) * 10.0;
+	int targetPosY = (y / double(LEVEL_HEIGHT)) * 8.0;
 
 	GridPosition targetPosition = { targetPosX, targetPosY };
 
@@ -135,8 +135,8 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 	}
 
 	// Calculate the actual x and y position of the next position in the path
-	int nextX = (currentPosition.first / 8.0) * double(LEVEL_WIDTH);
-	int nextY = (currentPosition.second / 6.0) * double(LEVEL_HEIGHT);
+	int nextX = (currentPosition.first / 10.0) * double(LEVEL_WIDTH);
+	int nextY = (currentPosition.second / 8.0) * double(LEVEL_HEIGHT);
 
 	// Convert x and y position so the enemy moves to the centre of the tile
 	nextX += 80 / 2;
@@ -153,7 +153,7 @@ std::pair<int, int> Enemy::calculatePath(int x, int y, int levelGrid[6][8]) {
 
 }
 
-std::vector<GridPosition> Enemy::getAdjacentPositions(GridPosition position, int levelGrid[6][8]) {
+std::vector<GridPosition> Enemy::getAdjacentPositions(GridPosition position, int levelGrid[8][10]) {
 	// Initialise vector to store adjacent positions
 	std::vector<GridPosition> adjacentPositions;
 
@@ -168,7 +168,7 @@ std::vector<GridPosition> Enemy::getAdjacentPositions(GridPosition position, int
 	}
 
 	// Get the node to the right of the current node if it is within the grid
-	if (position.first != 7) {
+	if (position.first != 9) {
 		GridPosition right = { position.first + 1, position.second };
 
 		// If the node is not a wall, add it to the vector
@@ -188,7 +188,7 @@ std::vector<GridPosition> Enemy::getAdjacentPositions(GridPosition position, int
 	}
 
 	// Get the node below the current node if it is within the grid
-	if (position.second != 5) {
+	if (position.second != 7) {
 		GridPosition down = { position.first, position.second + 1 };
 
 		// If the node is not a wall, add it to the vector
@@ -229,7 +229,7 @@ void Enemy::setWaypoint(std::pair<int, int> waypoint) {
 	this->currentWaypoint = waypoint;
 }
 
-void Enemy::moveToCurrentWaypoint(int levelGrid[6][8]) {
+void Enemy::moveToCurrentWaypoint(int levelGrid[8][10]) {
 
 	std::pair<int, int> nextPos = calculatePath(currentWaypoint.first, currentWaypoint.second, levelGrid);
 

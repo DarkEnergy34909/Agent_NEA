@@ -9,7 +9,7 @@ Player::~Player() {
 	// Do nothing
 }
 
-void Player::handleInput(SDL_Event& e) {
+void Player::handleInput(SDL_Event& e, int camX, int camY) {
 	// If a key is pressed, adjust velocity
 	if (e.type == SDL_KEYDOWN && e.key.repeat == 0) {
 		switch (e.key.keysym.sym) {
@@ -76,7 +76,7 @@ void Player::handleInput(SDL_Event& e) {
 			case PISTOL:
 				// Calculate the angle between the player and the cursor
 				//angle = atan2(mouseY - (posY + (height / 2)), mouseX - (posX + (3 * width / 4)));
-				angle = atan2(mouseY - (posY + (height / 2)), mouseX - (posX + (width / 2)));
+				angle = atan2(mouseY - (posY + (height / 2) - camY), mouseX - (posX + (width / 2) - camX));
 
 				// Convert the angle from radians to degrees
 				angle = angle * 180 / M_PI;

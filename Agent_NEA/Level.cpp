@@ -457,7 +457,7 @@ bool Level::loadLevel() {
 
 	// Initialise the tileset texture
 	Texture* tileset = new Texture(renderer);
-	if (!tileset->loadFromFile(PATH + "tiles.png")) {
+	if (!tileset->loadFromFile(PATH + "tileset.png")) {
 		std::cout << "Error loading tileset" << std::endl;
 		return false;
 	}
@@ -477,7 +477,7 @@ bool Level::loadLevel() {
 	for (int i = 0; i < TOTAL_TILES; i++) {
 
 		// Get tile type from the stored level
-		int tileType = storedLevel[verticalCounter][horizontalCounter];
+		int tileType = storedLevel2[verticalCounter][horizontalCounter];
 
 		// Initialise a new tile
 		Tile* tile = new Tile(tileType, posX, posY);
@@ -819,7 +819,7 @@ void Level::handleInput(SDL_Event& e) {
 			paused = !paused;
 		}
 		else {
-			player->handleInput(e);
+			player->handleInput(e, camera.x, camera.y);
 		}
 	}
 	// Handle mouse clicks

@@ -10,5 +10,5 @@ class Player : public Character {
 		~Player();
 
 		// Handles keyboard input for the player
-		void handleInput(SDL_Event& e);
+		void handleInput(SDL_Event& e, int camX = 0, int camY = 0);
 };
