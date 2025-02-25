@@ -1,5 +1,12 @@
 #pragma once
 
+struct LevelData {
+	const int LEVEL_WIDTH;
+	const int LEVEL_HEIGHT;
+
+	// Other constants ...
+};
+
 static const int SCREEN_WIDTH = 640;
 static const int SCREEN_HEIGHT = 480;
 
