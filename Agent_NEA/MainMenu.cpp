@@ -30,6 +30,9 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 
 	// Set the current settings option to volume
 	currentSettingsOption = VOLUME;
+
+	// Set the current level option to level 1
+	currentLevelOption = LEVEL_1;
 	
 	// Set game started to false
 	gameStarted = false;
@@ -159,6 +162,27 @@ bool MainMenu::loadMenu() {
 		return false;
 	}
 
+	// Load the level 1 texture
+	level1 = new Texture(renderer);
+	if (!level1->loadFromText("Level 1", font, { 255,255,255 })) {
+		std::cout << "Error loading level 1 texture" << std::endl;
+		return false;
+	}
+
+	// Load the level 2 texture
+	level2 = new Texture(renderer);
+	if (!level2->loadFromText("Level 2", font, { 255,255,255 })) {
+		std::cout << "Error loading level 2 texture" << std::endl;
+		return false;
+	}
+
+	// Load the level 3 texture
+	level3 = new Texture(renderer);
+	if (!level3->loadFromText("Level 3", font, { 255,255,255 })) {
+		std::cout << "Error loading level 3 texture" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
@@ -224,7 +248,7 @@ void MainMenu::render() {
 		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 400);
 	}
 
-	// If the current screen is the settings menu, render the settings menudddd
+	// If the current screen is the settings menu, render the settings menu
 	else if (currentScreen == SETTINGS_MENU) {
 		// Render the settings title
 		settingsText->render((SCREEN_WIDTH - settings->getWidth()) / 2, 50);
@@ -266,6 +290,47 @@ void MainMenu::render() {
 		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 400);
 	}
 
+	// If the current screen is the level selection screen, render the level selection screen
+	else if (currentScreen == LEVEL_SELECTION_MENU) {
+		// Render the title
+		title->render((SCREEN_WIDTH - title->getWidth()) / 2, 50);
+
+		// Render the level 1 option
+		if (currentLevelOption == LEVEL_1) {
+			level1->setColor(255, 0, 0);
+		}
+		else {
+			level1->setColor(255, 255, 255);
+		}
+		level1->render((SCREEN_WIDTH - level1->getWidth()) / 2, 200);
+
+		// Render the level 2 option
+		if (currentLevelOption == LEVEL_2) {
+			level2->setColor(255, 0, 0);
+		}
+		else {
+			level2->setColor(255, 255, 255);
+		}
+		level2->render((SCREEN_WIDTH - level2->getWidth()) / 2, 250);
+
+		// Render the level 3 option
+		if (currentLevelOption == LEVEL_3) {
+			level3->setColor(255, 0, 0);
+		}
+		else {
+			level3->setColor(255, 255, 255);
+		}
+		level3->render((SCREEN_WIDTH - level3->getWidth()) / 2, 300);
+
+		// Render the back option
+		if (currentLevelOption == LEVEL_BACK) {
+			back->setColor(255, 0, 0);
+		}
+		else {
+			back->setColor(255, 255, 255);
+		}
+		back->render((SCREEN_WIDTH - back->getWidth()) / 2, 350);
+	}
 }
 
 void MainMenu::handleInput(SDL_Event& e) {
@@ -376,6 +441,34 @@ void MainMenu::handleInput(SDL_Event& e) {
 				currentScreen = MAIN_MENU;
 			}
 		}
+
+		else if (currentScreen == LEVEL_SELECTION_MENU) {
+			switch (e.key.keysym.sym) {
+				// If the up arrow is pressed, move the current option up
+				case SDLK_UP:
+					currentLevelOption = (currentLevelOption + 3) % 4;
+					break;
+
+				// If the down arrow is pressed, move the current option down
+				case SDLK_DOWN:
+					currentLevelOption = (currentLevelOption + 1) % 4;
+					break;
+
+				// If the enter key is pressed, select the current option
+				case SDLK_RETURN:
+					// If the current option is back, go back to the main menu
+					if (currentLevelOption == LEVEL_BACK) {
+						currentScreen = MAIN_MENU;
+					}
+					// If level 1 is selected, launch level 1
+					else if (currentLevelOption == LEVEL_1) {
+						// Set the game started flag to true
+						gameStarted = true;
+					}
+					// TODO: Other levels
+					break;
+			}
+		}
 	}
 }
 
@@ -383,7 +476,8 @@ void MainMenu::selectOption() {
 	switch (currentOption) {
 		// If the current option is play, start the game
 		case PLAY:
-			gameStarted = true;
+			//gameStarted = true;
+			currentScreen = LEVEL_SELECTION_MENU;
 			break;
 
 		// If the current option is instructions, open the instructions menu

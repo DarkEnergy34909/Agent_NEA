@@ -7,11 +7,15 @@ enum MenuOption {
 };
 
 enum MenuScreen {
-	MAIN_MENU, INSTRUCTIONS_MENU, SETTINGS_MENU, GAME_OVER_MENU
+	MAIN_MENU, LEVEL_SELECTION_MENU, INSTRUCTIONS_MENU, SETTINGS_MENU, GAME_OVER_MENU
 };
 
 enum SettingsOption {
 	VOLUME, FPS, BACK
+};
+
+enum LevelOption {
+	LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_BACK
 };
 
 class MainMenu {
@@ -117,8 +121,20 @@ class MainMenu {
 		// The game over texture
 		Texture* gameOver;
 
+		// The level 1 texture
+		Texture* level1;
+
+		// The level 2 texture
+		Texture* level2;
+
+		// The level 3 texture
+		Texture* level3;
+
 		// The current menu option selected
 		int currentOption;
+
+		// The current level option selected
+		int currentLevelOption;
 
 		// The current settings option selected
 		int currentSettingsOption;
