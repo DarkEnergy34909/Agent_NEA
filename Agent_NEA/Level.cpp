@@ -770,10 +770,9 @@ void Level::updateEnemies() {
 		updateScore(30);
 
 		// EVALUATION
-		// Increase health by 10 if player health is less than or equal to 90
-		if (player->getHp() <= 90) {
-			player->takeDamage(-5);
-		}
+		// Increase health by 5
+		player->takeDamage(-5);
+		
 	}
 
 	// If all enemies are passive (and the alarm is not triggered), set status to undetected
@@ -960,6 +959,13 @@ void Level::moveEntities() {
 				}
 			}
 
+			// Set entity to null in the bullets vector
+			for (auto& bullet : bullets) {
+				if (bullet == entity) {
+					bullet = NULL;
+				}
+			}
+
 			// Delete the entity
 			delete entity;
 
@@ -988,6 +994,7 @@ void Level::moveEntities() {
 	// Remove all deleted entities from game containers
 	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), nullptr), gameObjects.end());
 	entities.erase(std::remove(entities.begin(), entities.end(), nullptr), entities.end());
+	bullets.erase(std::remove(bullets.begin(), bullets.end(), nullptr), bullets.end());
 }
 
 void Level::updateCharacters() {

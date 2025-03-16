@@ -29,7 +29,7 @@ bool Game::init() {
 		return false; 
 	}
 
-	window = SDL_CreateWindow("Agent", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN  | SDL_WINDOW_FULLSCREEN);
+	window = SDL_CreateWindow("Agent", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN  /* | SDL_WINDOW_FULLSCREEN_DESKTOP*/);
 	if (window == NULL) {
 		std::cout << "Error creating window: " << SDL_GetError() << std::endl;
 		return false;

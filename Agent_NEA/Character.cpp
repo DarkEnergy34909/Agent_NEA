@@ -28,6 +28,11 @@ void Character::takeDamage(int damage) {
 		hp = 0;
 		alive = false;
 	}
+
+	// If hp is greater than the max hp, set hp to max hp
+	if (hp > hpMax) {
+		hp = hpMax;
+	}
 }
 
 void Character::render(int camX, int camY) {
