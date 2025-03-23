@@ -15,7 +15,7 @@ enum SettingsOption {
 };
 
 enum LevelOption {
-	LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_BACK
+	LEVEL_1_OPTION, LEVEL_2_OPTION, LEVEL_3_OPTION, LEVEL_BACK_OPTION
 };
 
 class MainMenu {
@@ -53,6 +53,9 @@ class MainMenu {
 		// Returns the FPS
 		int getFPS();
 
+		// Returns the current level option
+		int getLevelOption();
+
 		// Sets the game screen
 		void setScreen(int screen);
 
@@ -68,7 +71,7 @@ class MainMenu {
 
 	private:
 		// File path
-		const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
+		//const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
 
 		// The window
 		SDL_Window* window;

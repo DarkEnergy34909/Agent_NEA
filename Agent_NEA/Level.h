@@ -20,13 +20,13 @@ class Level {
 		~Level();
 
 		// Initialises the level and all objects/textures
-		bool init();
+		bool init(int selectedLevel = LEVEL_1);
 
 		// Loads each game object and its textures
-		bool loadObjects();
+		bool loadObjects(int selectedLevel = LEVEL_1);
 
 		// Loads the level
-		bool loadLevel();
+		bool loadLevel(int selectedLevel = LEVEL_1);
 
 		// Loads text and font
 		bool loadText();
@@ -85,7 +85,7 @@ class Level {
 
 	private:
 		// File path
-		const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
+		//const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
 
 		// The window the level is rendered to
 		SDL_Window* window;
@@ -133,10 +133,10 @@ class Level {
 
 
 		// The tiles that make up the level
-		Tile* tiles[TOTAL_TILES];
+		std::vector<Tile*> tiles;
 
 		// The grid of tiles that make up the level
-		int levelGrid[VERTICAL_TILES][HORIZONTAL_TILES];
+		std::vector<std::vector<int>> levelGrid;
 
 		// The clips of the tileset for each tile type
 		SDL_Rect tileClips[TOTAL_TILE_TYPES];

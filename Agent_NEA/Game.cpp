@@ -29,7 +29,7 @@ bool Game::init() {
 		return false; 
 	}
 
-	window = SDL_CreateWindow("Agent", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN  /* | SDL_WINDOW_FULLSCREEN_DESKTOP*/);
+	window = SDL_CreateWindow("Agent", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN   /* | SDL_WINDOW_FULLSCREEN*/);
 	if (window == NULL) {
 		std::cout << "Error creating window: " << SDL_GetError() << std::endl;
 		return false;
@@ -78,10 +78,10 @@ bool Game::init() {
 
 }
 
-bool Game::loadMedia() {
+bool Game::loadMedia(int selectedLevel) {
 
 	// Load level media
-	if (!level->init()) {
+	if (!level->init(selectedLevel)) {
 		std::cout << "Error loading level" << std::endl;
 		return false;
 	}
@@ -171,6 +171,34 @@ void Game::mainLoop() {
 			if (mainMenu->isGameStarted()) {
 				// Reset the game started flag (so that the game does not start again when the main menu is reloaded)
 				mainMenu->setGameStarted(false);
+
+				// Load the level media
+				int levelOption = mainMenu->getLevelOption();
+				if (levelOption == LEVEL_1_OPTION) {
+					if (!loadMedia(LEVEL_1)) {
+						std::cout << "Error loading level media" << std::endl;
+						return;
+					}
+				}
+				else if (levelOption == LEVEL_2_OPTION) {
+					// Load level 2
+					if (!loadMedia(LEVEL_1)) {
+						std::cout << "Error loading level media" << std::endl;
+						return;
+					}
+				}
+				else if (levelOption == LEVEL_3_OPTION) {
+					// Load level 3
+					if (!loadMedia(LEVEL_1)) {
+						std::cout << "Error loading level media" << std::endl;
+						return;
+					}
+				}
+				else {
+					// Print an error message
+					std::cout << "Invalid level option" << std::endl;
+					return;
+				}
 				break;
 			}
 
@@ -220,7 +248,6 @@ void Game::mainLoop() {
 				level = NULL;
 
 				level = new Level(window, renderer);
-				loadMedia();
 
 				break;
 			}
@@ -234,10 +261,10 @@ bool Game::start() {
 		std::cout << "Error initialising game" << std::endl;
 		return false;
 	}
-	if (!loadMedia()) {
-		std::cout << "Error loading media" << std::endl;
-		return false;
-	}
+	//if (!loadMedia()) {
+		//std::cout << "Error loading media" << std::endl;
+		//return false;
+	//}
 	if (!loadMenu()) {
 		std::cout << "Error loading menu" << std::endl;
 		return false;

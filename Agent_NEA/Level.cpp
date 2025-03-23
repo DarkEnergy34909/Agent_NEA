@@ -30,6 +30,12 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	// Set font to null initially
 	font = NULL;
 
+	// Initialise level grid
+	levelGrid = std::vector<std::vector<int>>();
+
+	// Initialise tiles
+	tiles = std::vector<Tile*>();
+
 	// Initialise containers
 	textures = std::vector<Texture*>();
 	gameObjects = std::vector<GameObject*>();
@@ -45,16 +51,17 @@ Level::Level(SDL_Window* window, SDL_Renderer* renderer) {
 	item = NULL;
 
 	// Initialise tiles to null initially
-	for (int i = 0; i < TOTAL_TILES; i++) {
+	/*for (int i = 0; i < TOTAL_TILES; i++) {
 		tiles[i] = NULL;
-	}
+	}*/
 
 	// Initialise levelGrid to 0s
+	/*
 	for (int i = 0; i < VERTICAL_TILES; i++) {
 		for (int j = 0; j < HORIZONTAL_TILES; j++) {
 			levelGrid[i][j] = 0;
 		}
-	}
+	}*/
 
 	// Initialise clips to default values
 	for (int i = 0; i < TOTAL_TILE_TYPES; i++) {
@@ -101,15 +108,15 @@ Level::~Level() {
 	close();
 }
 
-bool Level::init() {
+bool Level::init(int selectedLevel) {
 	// Load the level itself 
-	if (!loadLevel()) {
+	if (!loadLevel(selectedLevel)) {
 		std::cout << "Error loading level" << std::endl;
 		return false;
 	}
 
 	// Load level objects
-	if (!loadObjects()) {
+	if (!loadObjects(selectedLevel)) {
 		std::cout << "Error loading objects" << std::endl;
 		return false;
 	}
@@ -167,7 +174,7 @@ void Level::close() {
 
 }
 
-bool Level::loadObjects() {
+bool Level::loadObjects(int selectedLevel) {
 	// Load default player texture
 	Texture* playerDefaultTexture = new Texture(renderer);
 	if (!playerDefaultTexture->loadFromFile(PATH + "player_test_1.png")) {
@@ -433,18 +440,27 @@ bool Level::loadText() {
 
 }
 
-bool Level::loadLevel() {
+bool Level::loadLevel(int selectedLevel) {
 	// The level will eventually be loaded from a file, but for now it is hardcoded
-	int storedLevel[6][8] = {
+	/*int storedLevel[6][8] = {
 		{TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN},
 		{TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE},
 		{TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED},
 		{TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN},
 		{TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE},
 		{TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED}
+	};*/
+
+	std::vector<std::vector<int>> storedLevel1 = {
+		{ TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN },
+		{ TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE },
+		{ TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED },
+		{ TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN },
+		{ TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE },
+		{ TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED }
 	};
 
-	int storedLevel2[8][10] = {
+	/*int storedLevel2[8][10] = {
 		{TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED},
 		{TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN},
 		{TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE, TILE_LEFT, TILE_RIGHT, TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE},
@@ -453,11 +469,50 @@ bool Level::loadLevel() {
 		{TILE_BLUE, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_BLUE, TILE_LEFT, TILE_RIGHT, TILE_BLUE, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_BLUE},
 		{TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED},
 		{TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN}
+	};*/
+
+	std::vector<std::vector<int>> storedLevel2 = {
+		{ TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED },
+		{ TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_GREEN },
+		{ TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE, TILE_LEFT, TILE_RIGHT, TILE_BLUE, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_BLUE },
+		{ TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_LEFT, TILE_RIGHT, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED },
+		{ TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_LEFT, TILE_RIGHT, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN },
+		{ TILE_BLUE, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_BLUE, TILE_LEFT, TILE_RIGHT, TILE_BLUE, TILE_TOP_LEFT, TILE_TOP_RIGHT, TILE_BLUE },
+		{ TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED, TILE_BOTTOM_LEFT, TILE_BOTTOM_RIGHT, TILE_RED },
+		{ TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN, TILE_BLUE, TILE_RED, TILE_GREEN }
 	};
 
-	//int storedLevel3[]
 
-	
+	// The level data for the level to be loaded
+	LevelData levelData = {};
+
+	// The level to be loaded
+	std::vector<std::vector<int>> loadedLevel = {};
+
+	// Set the level data for the selected level
+	switch (selectedLevel) {
+		case LEVEL_1:
+			levelData = LEVEL_1_DATA;
+			loadedLevel = storedLevel2;
+			break;
+		case LEVEL_2:
+			levelData = LEVEL_2_DATA;
+			loadedLevel = storedLevel1;
+			break;
+		case LEVEL_3:
+			levelData = LEVEL_3_DATA;
+			loadedLevel = storedLevel2;
+			break;
+		default:
+			std::cout << "Invalid level option" << std::endl;
+			return false;
+	}
+
+	// Set level grid dimensions
+	levelGrid = std::vector<std::vector<int>>(levelData.VERTICAL_TILES, std::vector<int>(levelData.HORIZONTAL_TILES, 0));
+
+	// Set tile array size
+	tiles = std::vector<Tile*>(levelData.TOTAL_TILES);
 
 	// Initialise the tileset texture
 	Texture* tileset = new Texture(renderer);
@@ -481,7 +536,7 @@ bool Level::loadLevel() {
 	for (int i = 0; i < TOTAL_TILES; i++) {
 
 		// Get tile type from the stored level
-		int tileType = storedLevel2[verticalCounter][horizontalCounter];
+		int tileType = loadedLevel[verticalCounter][horizontalCounter];
 
 		// Initialise a new tile
 		Tile* tile = new Tile(tileType, posX, posY);

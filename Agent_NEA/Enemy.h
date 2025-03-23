@@ -27,7 +27,7 @@ class Enemy : public Character {
 		void moveTo(int x, int y);
 
 		// Calculates a path to a point and returns the next point in the path
-		std::pair<int, int> calculatePath(int x, int y, int levelGrid[VERTICAL_TILES][HORIZONTAL_TILES]);
+		std::pair<int, int> calculatePath(int x, int y, std::vector<std::vector<int>> levelGrid);
 
 		// Detects whether an object is within the enemy's cone of vision
 		bool canSee(SDL_Rect collider);
@@ -45,7 +45,7 @@ class Enemy : public Character {
 		int getAwareness();
 
 		// Moves the enemy to a waypoint
-		void moveToCurrentWaypoint(int levelGrid[VERTICAL_TILES][HORIZONTAL_TILES]);
+		void moveToCurrentWaypoint(std::vector<std::vector<int>> levelGrid);
 
 		// Sets the waypoint
 		void setWaypoint(std::pair<int, int> waypoint);
@@ -73,7 +73,7 @@ class Enemy : public Character {
 		int enemyType;
 
 		// Gets adjacent grid positions
-		std::vector<GridPosition> getAdjacentPositions(GridPosition position, int levelGrid[VERTICAL_TILES][HORIZONTAL_TILES]);
+		std::vector<GridPosition> getAdjacentPositions(GridPosition position, std::vector<std::vector<int>> levelGrid);
 
 		// Calculates the Manhattan distance between grid positions (for a heuristic)	
 		int heuristic(GridPosition a, GridPosition b);

@@ -25,7 +25,7 @@ class Game {
 		bool init();
 
 		// Loads textures/sounds for the game
-		bool loadMedia();
+		bool loadMedia(int selectedLevel = LEVEL_1);
 
 		// Loads the game menu
 		bool loadMenu();
@@ -47,7 +47,7 @@ class Game {
 		//const int SCREEN_HEIGHT = 640;
 
 		// Path to media files
-		const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
+		//const std::string PATH = "C:/Users/S_kem/OneDrive - King Edward VI Grammar School/CS A-Level/NEA/Media/";
 
 		// The window the game is rendered to 
 		SDL_Window* window; 

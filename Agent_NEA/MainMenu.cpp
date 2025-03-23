@@ -18,6 +18,9 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 	volumeSetting = NULL;
 	fpsSetting = NULL;
 	gameOver = NULL;
+	level1 = NULL;
+	level2 = NULL;
+	level3 = NULL;
 
 	// Set font to null initially
 	font = NULL;
@@ -32,7 +35,7 @@ MainMenu::MainMenu(SDL_Window* window, SDL_Renderer* renderer) {
 	currentSettingsOption = VOLUME;
 
 	// Set the current level option to level 1
-	currentLevelOption = LEVEL_1;
+	currentLevelOption = LEVEL_1_OPTION;
 	
 	// Set game started to false
 	gameStarted = false;
@@ -296,7 +299,7 @@ void MainMenu::render() {
 		title->render((SCREEN_WIDTH - title->getWidth()) / 2, 50);
 
 		// Render the level 1 option
-		if (currentLevelOption == LEVEL_1) {
+		if (currentLevelOption == LEVEL_1_OPTION) {
 			level1->setColor(255, 0, 0);
 		}
 		else {
@@ -305,7 +308,7 @@ void MainMenu::render() {
 		level1->render((SCREEN_WIDTH - level1->getWidth()) / 2, 200);
 
 		// Render the level 2 option
-		if (currentLevelOption == LEVEL_2) {
+		if (currentLevelOption == LEVEL_2_OPTION) {
 			level2->setColor(255, 0, 0);
 		}
 		else {
@@ -314,7 +317,7 @@ void MainMenu::render() {
 		level2->render((SCREEN_WIDTH - level2->getWidth()) / 2, 250);
 
 		// Render the level 3 option
-		if (currentLevelOption == LEVEL_3) {
+		if (currentLevelOption == LEVEL_3_OPTION) {
 			level3->setColor(255, 0, 0);
 		}
 		else {
@@ -323,7 +326,7 @@ void MainMenu::render() {
 		level3->render((SCREEN_WIDTH - level3->getWidth()) / 2, 300);
 
 		// Render the back option
-		if (currentLevelOption == LEVEL_BACK) {
+		if (currentLevelOption == LEVEL_BACK_OPTION) {
 			back->setColor(255, 0, 0);
 		}
 		else {
@@ -457,15 +460,14 @@ void MainMenu::handleInput(SDL_Event& e) {
 				// If the enter key is pressed, select the current option
 				case SDLK_RETURN:
 					// If the current option is back, go back to the main menu
-					if (currentLevelOption == LEVEL_BACK) {
+					if (currentLevelOption == LEVEL_BACK_OPTION) {
 						currentScreen = MAIN_MENU;
 					}
-					// If level 1 is selected, launch level 1
-					else if (currentLevelOption == LEVEL_1) {
+					// If a level is selected, start the game
+					else {
 						// Set the game started flag to true
 						gameStarted = true;
 					}
-					// TODO: Other levels
 					break;
 			}
 		}
@@ -513,6 +515,10 @@ int MainMenu::getVolume() {
 
 int MainMenu::getFPS() {
 	return fps;
+}
+
+int MainMenu::getLevelOption() {
+	return currentLevelOption;
 }
 
 void MainMenu::setScreen(int screen) {
